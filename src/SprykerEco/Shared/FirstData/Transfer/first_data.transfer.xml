@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<transfers xmlns="spryker:transfer-01"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="spryker:transfer-01 http://static.spryker.com/transfer-01.xsd">
+
+    <transfer name="FirstData">
+        <property name="data" type="string"/>
+        <property name="firstDataTransactionData" type="FirstDataTransactionData"/>
+    </transfer>
+
+    <transfer name="Payment">
+        <property name="firstDataCreditCard" type="FirstData"/>
+    </transfer>
+
+    <transfer name="PaymentFirstData">
+        <property name="idPaymentFirstData" type="int"/>
+        <property name="fkSalesOrder" type="int"/>
+        <property name="orderReference" type="string"/>
+        <property name="transactionId" type="string"/>
+        <property name="oid" type="string"/>
+        <property name="txnDateTime" type="string"/>
+        <property name="status" type="string"/>
+        <property name="approvalCode" type="string"/>
+        <property name="schemeTransactionId" type="string"/>
+        <property name="chargeTotal" type="int"/>
+        <property name="hosteddataid" type="string"/>
+        <property name="responseHash" type="string"/>
+        <property name="cardNumber" type="string"/>
+        <property name="expYear" type="string"/>
+        <property name="expMonth" type="string"/>
+        <property name="ccBrand" type="string"/>
+    </transfer>
+
+    <transfer name="PaymentFirstDataItem">
+        <property name="idPaymentFirstDataItem" type="int"/>
+        <property name="fkPaymentFirstData" type="int"/>
+        <property name="fkSalesOrderItem" type="int"/>
+        <property name="status" type="string"/>
+        <property name="transactionId" type="string"/>
+    </transfer>
+
+    <transfer name="PaymentFirstDataApiLog">
+        <property name="idPaymentFirstDataApiLog" type="int"/>
+        <property name="type" type="string"/>
+        <property name="request" type="string"/>
+        <property name="isSuccess" type="bool"/>
+        <property name="response" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataHashRequest">
+        <property name="chargeTotal" type="string"/>
+        <property name="currency" type="string"/>
+        <property name="responseFailURL" type="string"/>
+        <property name="responseSuccessURL" type="string"/>
+        <property name="storeName" type="string"/>
+        <property name="timezone" type="string"/>
+        <property name="transactionNotificationURL" type="string"/>
+        <property name="txnDateTime" type="string"/>
+        <property name="txnType" type="string"/>
+        <property name="mobileMode" type="bool"/>
+        <property name="checkoutOption" type="string"/>
+        <property name="language" type="string"/>
+        <property name="hashAlgorithm" type="string"/>
+        <property name="authenticateTransaction" type="bool"/>
+        <property name="assignToken" type="bool"/>
+        <property name="tokenType" type="string"/>
+        <property name="declineHostedDataDuplicates" type="bool"/>
+        <property name="oid" type="string"/>
+        <property name="customerId" type="string"/>
+        <property name="phone" type="string"/>
+        <property name="email" type="string"/>
+        <property name="bname" type="string"/>
+        <property name="baddr1" type="string"/>
+        <property name="baddr2" type="string"/>
+        <property name="bcity" type="string"/>
+        <property name="bzip" type="string"/>
+        <property name="bstate" type="string"/>
+        <property name="bcountry" type="string"/>
+        <property name="sname" type="string"/>
+        <property name="saddr1" type="string"/>
+        <property name="saddr2" type="string"/>
+        <property name="szip" type="string"/>
+        <property name="scity" type="string"/>
+        <property name="sstate" type="string"/>
+        <property name="scountry" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataApiRequest">
+        <property name="requestType" type="string"/>
+        <property name="transactionId" type="string"/>
+        <property name="order" type="Order"/>
+        <property name="refund" type="Refund"/>
+        <property name="orderItemIds" type="int[]"/>
+        <property name="paymentMethod" type="PaymentMethod"/>
+        <property name="storeName" type="string"/>
+        <property name="percentageBuffer" type="int"/>
+    </transfer>
+
+    <transfer name="PaymentMethod">
+        <property name="paymentToken" type="PaymentToken"/>
+    </transfer>
+
+    <transfer name="PaymentToken">
+        <property name="function" type="string"/>
+        <property name="value" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataHttpRequest">
+        <property name="body" type="string"/>
+        <property name="headers" type="array"/>
+    </transfer>
+
+    <transfer name="FirstDataApiResponse">
+        <property name="isSuccess" type="bool"/>
+        <property name="error" type="FirstDataApiErrorResponse"/>
+        <property name="clientResponse" type="FirstDataApiClientResponse"/>
+    </transfer>
+
+    <transfer name="FirstDataApiErrorResponse">
+        <property name="message" type="string"/>
+        <property name="code" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataApiClientResponse">
+        <property name="clientRequestId" type="string"/>
+        <property name="apiTraceId" type="string"/>
+        <property name="ipgTransactionId" type="string"/>
+        <property name="orderId" type="string"/>
+        <property name="transactionType" type="string"/>
+        <property name="transactionOrigin" type="string"/>
+        <property name="paymentMethodDetails" type="FirstDataApiPaymentMethodDetailsResponse"/>
+        <property name="country" type="string"/>
+        <property name="terminalId" type="string"/>
+        <property name="merchantId" type="string"/>
+        <property name="transactionTime" type="string"/>
+        <property name="approvedAmount" type="FirstDataApiApprovedAmountResponse"/>
+        <property name="transactionTime" type="string"/>
+        <property name="schemeTransactionId" type="string"/>
+        <property name="processor" type="FirstDataApiProcessorResponse"/>
+    </transfer>
+
+    <transfer name="FirstDataApiPaymentMethodDetailsResponse">
+        <property name="paymentCard" type="PaymentCard"/>
+        <property name="paymentMethodType" type="string"/>
+    </transfer>
+
+    <transfer name="PaymentCard">
+        <property name="expiryDate" type="array"/>
+        <property name="bin" type="string"/>
+        <property name="last4" type="string"/>
+        <property name="brand" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataApiApprovedAmountResponse">
+        <property name="total" type="string"/>
+        <property name="currency" type="string"/>
+        <property name="components" type="array"/>
+    </transfer>
+
+    <transfer name="FirstDataApiProcessorResponse">
+        <property name="referenceNumber" type="string"/>
+        <property name="authorizationCode" type="string"/>
+        <property name="responseCode" type="string"/>
+        <property name="network" type="string"/>
+        <property name="associationResponseCode" type="string"/>
+        <property name="responseMessage" type="string"/>
+        <property name="avsResponse" type="array"/>
+        <property name="transactionIntegrityClass" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataCreditCardParameters">
+        <property name="txnType" type="string"/>
+        <property name="timezone" type="string"/>
+        <property name="txnDateTime" type="string"/>
+        <property name="hashAlgorithm" type="string"/>
+        <property name="hashExtended" type="string"/>
+        <property name="oid" type="string"/>
+        <property name="storeName" type="string"/>
+        <property name="chargeTotal" type="string"/>
+        <property name="currency" type="string"/>
+        <property name="authenticateTransaction" type="bool"/>
+        <property name="transactionNotificationURL" type="string"/>
+        <property name="responseSuccessURL" type="string"/>
+        <property name="responseFailURL" type="string"/>
+        <property name="bname" type="string"/>
+        <property name="baddr1" type="string"/>
+        <property name="baddr2" type="string"/>
+        <property name="bcity" type="string"/>
+        <property name="bstate" type="string"/>
+        <property name="bcountry" type="string"/>
+        <property name="bzip" type="string"/>
+        <property name="phone" type="string"/>
+        <property name="email" type="string"/>
+        <property name="sname" type="string"/>
+        <property name="saddr1" type="string"/>
+        <property name="saddr2" type="string"/>
+        <property name="scity" type="string"/>
+        <property name="sstate" type="string"/>
+        <property name="scountry" type="string"/>
+        <property name="szip" type="string"/>
+        <property name="mobileMode" type="bool"/>
+        <property name="checkoutOption" type="string"/>
+        <property name="language" type="string"/>
+        <property name="assignToken" type="bool"/>
+        <property name="tokenType" type="string"/>
+        <property name="declineHostedDataDuplicates" type="bool"/>
+        <property name="customerId" type="string"/>
+    </transfer>
+
+    <transfer name="RestCheckoutRequestAttributes">
+        <property name="firstDataTransactionData" type="FirstDataTransactionData"/>
+    </transfer>
+
+    <transfer name="FirstDataTransactionData">
+        <property name="transactionId" type="string"/>
+        <property name="oid" type="string"/>
+        <property name="txnDateTime" type="string"/>
+        <property name="status" type="string"/>
+        <property name="approvalCode" type="string"/>
+        <property name="schemeTransactionId" type="string"/>
+        <property name="chargeTotal" type="int"/>
+        <property name="hosteddataid" type="string"/>
+        <property name="responseHash" type="string"/>
+        <property name="cardNumber" type="string"/>
+        <property name="expYear" type="string"/>
+        <property name="expMonth" type="string"/>
+        <property name="ccBrand" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataNotification">
+        <property name="idPaymentFirstDataNotification" type="int"/>
+        <property name="transactionId" type="string"/>
+        <property name="oid" type="string"/>
+        <property name="paymentToken" type="string"/>
+        <property name="status" type="string"/>
+        <property name="txnDateTime" type="string"/>
+        <property name="txnType" type="string"/>
+        <property name="refNumber" type="string"/>
+        <property name="idSchemeTransaction" type="string"/>
+        <property name="approvalCode" type="string"/>
+        <property name="chargeTotal" type="string"/>
+        <property name="currency" type="string"/>
+        <property name="timezone" type="string"/>
+    </transfer>
+
+    <transfer name="FirstDataOmsCommandRequest">
+        <property name="order" type="Order"/>
+        <property name="salesOrderItemIds" type="int[]"/>
+    </transfer>
+
+    <transfer name="Order">
+        <property name="idSalesOrder" type="int"/>
+    </transfer>
+</transfers>
