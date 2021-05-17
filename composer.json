@@ -1,0 +1,44 @@
+{
+    "name": "spryker-eco/first-data",
+    "type": "library",
+    "description": "FirstData PSP integration module",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.3",
+    },
+    "require-dev": {
+        "spryker/testify": "*"
+    },
+    "suggest": {
+        "spryker/checkout": "CheckoutPostSaveHookInterface is used."
+    },
+    "autoload": {
+        "psr-4": {
+            "SprykerEco\\": "src/SprykerEco/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SprykerEcoTest\\": "tests/SprykerEcoTest/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs-check": "phpcs -p -s --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml src/ tests/",
+        "cs-fix": "phpcbf -p --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml src/ tests/",
+        "phpstan": "phpstan analyse -l 6 -c phpstan.neon src/",
+        "test": "codecept run",
+        "test-coverage": "codecept run --coverage-xml"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "process-timeout": 600
+    }
+}
