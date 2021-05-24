@@ -6,7 +6,6 @@
     "require": {
         "php": ">=7.3",
         "psr/http-message": "^1.0.0",
-        "spryker-eco/sales": "*",
         "spryker/checkout-extension": "^1.0.0",
         "spryker/checkout-rest-api-extension": "*",
         "spryker/glue-application-extension": "^1.4.0",

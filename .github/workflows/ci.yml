@@ -20,7 +20,7 @@ jobs:
         env:
             APPLICATION_ENV: devtest
             APPLICATION_STORE: DE
-            PROJECT: adyen
+            PROJECT: first-data
 
         steps:
             - uses: actions/checkout@v2
