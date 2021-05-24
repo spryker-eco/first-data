@@ -8,8 +8,8 @@
 namespace SprykerEco\Zed\FirstData\Communication;
 
 use Spryker\Zed\Kernel\Communication\AbstractCommunicationFactory;
+use SprykerEco\Zed\FirstData\Dependency\Facade\FirstDataToSalesFacadeInterface;
 use SprykerEco\Zed\FirstData\FirstDataDependencyProvider;
-use SprykerEco\Zed\Sales\Business\SalesFacadeInterface;
 
 /**
  * @method \SprykerEco\Zed\FirstData\Persistence\FirstDataRepositoryInterface getRepository()
@@ -20,9 +20,9 @@ use SprykerEco\Zed\Sales\Business\SalesFacadeInterface;
 class FirstDataCommunicationFactory extends AbstractCommunicationFactory
 {
     /**
-     * @return \SprykerEco\Zed\Sales\Business\SalesFacadeInterface
+     * @return \SprykerEco\Zed\FirstData\Dependency\Facade\FirstDataToSalesFacadeInterface
      */
-    public function getSalesFacade(): SalesFacadeInterface
+    public function getSalesFacade(): FirstDataToSalesFacadeInterface
     {
         return $this->getProvidedDependency(FirstDataDependencyProvider::FACADE_SALES);
     }

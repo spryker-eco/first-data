@@ -65,7 +65,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
     public function executeOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void
     {
         $paymentFirstDataTransfer = $this->firstDataRepository
-            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrder()->getIdSalesOrder());
+            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrderOrFail()->getIdSalesOrderOrFail());
 
         if (!$paymentFirstDataTransfer) {
             return;
@@ -82,7 +82,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
         if (!$firstDataApiResponseTransfer->getIsSuccess()) {
             return;
         }
-
+        dd(123);
         $paymentFirstDataItemTransfers = $this->firstDataRepository
             ->getPaymentFirstDataItemCollection(
                 $paymentFirstDataTransfer,

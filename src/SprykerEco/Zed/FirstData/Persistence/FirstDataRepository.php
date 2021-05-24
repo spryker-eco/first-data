@@ -102,10 +102,10 @@ class FirstDataRepository extends AbstractRepository implements FirstDataReposit
     {
         return $this->getFactory()
             ->createOmsOrderItemStateHistoryQuery()
+            ->filterByFkSalesOrderItem($idSalesOrderItem)
             ->useStateQuery()
                 ->filterByName($stateName)
             ->endUse()
-            ->filterByFkSalesOrderItem($idSalesOrderItem)
             ->count();
     }
 

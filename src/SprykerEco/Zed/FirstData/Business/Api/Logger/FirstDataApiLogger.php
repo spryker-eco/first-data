@@ -10,8 +10,8 @@ namespace SprykerEco\Zed\FirstData\Business\Api\Logger;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataHttpRequestTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataApiLogTransfer;
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
 use Spryker\Zed\Kernel\Persistence\EntityManager\TransactionTrait;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface;
 use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
 
 class FirstDataApiLogger implements FirstDataApiLoggerInterface
@@ -24,17 +24,17 @@ class FirstDataApiLogger implements FirstDataApiLoggerInterface
     protected $firstDataEntityManager;
 
     /**
-     * @var \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     * @var \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface
      */
     protected $utilEncodingService;
 
     /**
      * @param \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface $firstDataEntityManager
-     * @param \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface $utilEncodingService
      */
     public function __construct(
         FirstDataEntityManagerInterface $firstDataEntityManager,
-        UtilEncodingServiceInterface $utilEncodingService
+        FirstDataToUtilEncodingServiceInterface $utilEncodingService
     ) {
         $this->firstDataEntityManager = $firstDataEntityManager;
         $this->utilEncodingService = $utilEncodingService;

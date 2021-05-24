@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\FirstData\Business\Checker;
 
+use Generated\Shared\Transfer\CheckoutErrorTransfer;
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\QuoteTransfer;
 use SprykerEco\Client\FirstData\FirstDataClientInterface;
@@ -55,7 +56,7 @@ class FirstDataResponseValidator implements FirstDataResponseValidatorInterface
             }
         }
 
-        if ($quoteTransfer->getPayment()->getPaymentMethod() === $this->firstDataConfig::PAYMENT_METHOD_KEY_CREDIT_CARD) {
+        if ($quoteTransfer->getPaymentOrFail()->getPaymentMethod() === $this->firstDataConfig::PAYMENT_METHOD_KEY_CREDIT_CARD) {
             return $this->validateResponseHash($quoteTransfer, $checkoutResponseTransfer);
         }
 
@@ -70,37 +71,20 @@ class FirstDataResponseValidator implements FirstDataResponseValidatorInterface
      */
     protected function validateResponseHash(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool
     {
-//        $firstDataCreditCard = $quoteTransfer->getPayment() ?
-//            $quoteTransfer->getPayment()->getFirstDataCreditCard() :
-//            null;
-//        $firstDataTransactionData = $firstDataCreditCard ? $firstDataCreditCard->getFirstDataTransactionData() : null;
-//
-//        if (!$firstDataTransactionData) {
-//            $checkoutErrorTransfer = (new CheckoutErrorTransfer())
-//                ->setMessage(static::GLOSSARY_KEY_FIRST_DATA_TRANSACTION_DATA_MISSING);
-//
-//            $checkoutResponseTransfer->addError($checkoutErrorTransfer);
-//            $checkoutResponseTransfer->setIsSuccess(false);
-//
-//            return false;
-//        }
-//
-//        if (!$firstDataTransactionData->getResponseHash()) {
-//            return true;
-//        }
-//
-//        $firstDataHashRequestTransfer = $this->firstDataCreditCardParametersMapperInterface->mapQuoteTransferToFirstDataHashRequestTransfer($quoteTransfer);
-//        $generatedHash = $this->firstDataClient->generateHash($firstDataHashRequestTransfer);
-//
-//        if ($firstDataTransactionData->getResponseHash() !== $generatedHash) {
-//            $checkoutErrorTransfer = (new CheckoutErrorTransfer())
-//                ->setMessage(static::GLOSSARY_KEY_FIRST_DATA_RESPONSE_HASH_INVALID);
-//
-//            $checkoutResponseTransfer->addError($checkoutErrorTransfer);
-//            $checkoutResponseTransfer->setIsSuccess(false);
-//
-//            return false;
-//        }
+        $firstDataCreditCard = $quoteTransfer->getPayment() ?
+            $quoteTransfer->getPaymentOrFail()->getFirstDataCreditCard() :
+            null;
+        $firstDataTransactionData = $firstDataCreditCard ? $firstDataCreditCard->getFirstDataTransactionData() : null;
+
+        if (!$firstDataTransactionData) {
+            $checkoutErrorTransfer = (new CheckoutErrorTransfer())
+                ->setMessage(static::GLOSSARY_KEY_FIRST_DATA_TRANSACTION_DATA_MISSING);
+
+            $checkoutResponseTransfer->addError($checkoutErrorTransfer);
+            $checkoutResponseTransfer->setIsSuccess(false);
+
+            return false;
+        }
 
         return true;
     }

@@ -60,7 +60,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
     protected function calculateCaptureTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
     {
         $total = 0;
-        foreach ($firstDataApiRequestTransfer->getOrder()->getItems() as $item) {
+        foreach ($firstDataApiRequestTransfer->getOrderOrFail()->getItems() as $item) {
             if (in_array($item->getIdSalesOrderItem(), $firstDataApiRequestTransfer->getOrderItemIds())) {
                 $total += (int)$item->getSumPriceToPayAggregation();
             }

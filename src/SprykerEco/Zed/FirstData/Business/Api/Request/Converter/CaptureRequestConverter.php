@@ -46,7 +46,7 @@ class CaptureRequestConverter implements FirstDataRequestConverterInterface
      */
     protected function calculateCaptureTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
     {
-        $grandTotal = $firstDataApiRequestTransfer->getOrder()->getTotalsOrFail()->getGrandTotal();
+        $grandTotal = $firstDataApiRequestTransfer->getOrderOrFail()->getTotalsOrFail()->getGrandTotal();
         $roundedSum = round($grandTotal / 100, 2);
 
         return (string)$roundedSum;

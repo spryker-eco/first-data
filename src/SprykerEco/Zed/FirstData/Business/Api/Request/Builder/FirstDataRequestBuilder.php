@@ -11,8 +11,8 @@ use ArrayObject;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\FirstDataHttpRequestTransfer;
 use Ramsey\Uuid\Uuid;
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
 use SprykerEco\Zed\FirstData\Business\Api\Generator\HashGeneratorInterface;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface;
 use SprykerEco\Zed\FirstData\FirstDataConfig;
 
 class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
@@ -25,7 +25,7 @@ class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
     protected $firstDataRequestConverters;
 
     /**
-     * @var \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     * @var \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface
      */
     protected $utilEncodingService;
 
@@ -41,13 +41,13 @@ class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
 
     /**
      * @param \SprykerEco\Zed\FirstData\Business\Api\Request\Converter\FirstDataRequestConverterInterface[] $firstDataRequestConverters
-     * @param \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface $utilEncodingService
      * @param \SprykerEco\Zed\FirstData\FirstDataConfig $firstDataConfig
      * @param \SprykerEco\Zed\FirstData\Business\Api\Generator\HashGeneratorInterface $hashGenerator
      */
     public function __construct(
         array $firstDataRequestConverters,
-        UtilEncodingServiceInterface $utilEncodingService,
+        FirstDataToUtilEncodingServiceInterface $utilEncodingService,
         FirstDataConfig $firstDataConfig,
         HashGeneratorInterface $hashGenerator
     ) {
@@ -82,7 +82,7 @@ class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
         $requestPayload = $this->executeFirstDataRequestConverter($requestPayload, $firstDataApiRequestTransfer);
         $requestPayload[static::REQUEST_KEY_REQUEST_TYPE] = $firstDataApiRequestTransfer->getRequestType();
 
-        return $this->utilEncodingService->encodeJson($requestPayload);
+        return $this->utilEncodingService->encodeJson($requestPayload) ?? '';
     }
 
     /**

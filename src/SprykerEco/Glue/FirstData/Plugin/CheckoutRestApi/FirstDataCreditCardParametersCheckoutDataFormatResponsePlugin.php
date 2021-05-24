@@ -7,10 +7,10 @@
 
 namespace SprykerEco\Glue\FirstData\Plugin\CheckoutRestApi;
 
+use Spryker\Glue\CheckoutRestApi\CheckoutRestApiConfig;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 use Spryker\Glue\GlueApplicationExtension\Dependency\Plugin\FormatResponseDataPluginInterface;
 use Spryker\Glue\Kernel\AbstractPlugin;
-use SprykerEco\Glue\CheckoutRestApi\CheckoutRestApiConfig;
 
 class FirstDataCreditCardParametersCheckoutDataFormatResponsePlugin extends AbstractPlugin implements FormatResponseDataPluginInterface
 {

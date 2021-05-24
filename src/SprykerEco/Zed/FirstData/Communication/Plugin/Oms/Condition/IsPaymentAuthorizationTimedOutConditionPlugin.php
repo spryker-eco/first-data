@@ -32,6 +32,10 @@ class IsPaymentAuthorizationTimedOutConditionPlugin extends AbstractPlugin imple
     {
         $orderTransfer = $this->getFactory()->getSalesFacade()->findOrderByIdSalesOrder($orderItem->getFkSalesOrder());
 
+        if (!$orderTransfer) {
+            return false;
+        }
+
         return $this->getFacade()->checkPaymentAuthorizationTimeOut($orderTransfer);
     }
 }

@@ -10,6 +10,8 @@
 
     <transfer name="Payment">
         <property name="firstDataCreditCard" type="FirstData"/>
+        <property name="paymentProvider" type="string"/>
+        <property name="paymentMethod" type="string"/>
     </transfer>
 
     <transfer name="PaymentFirstData">
@@ -90,7 +92,7 @@
         <property name="transactionId" type="string"/>
         <property name="order" type="Order"/>
         <property name="refund" type="Refund"/>
-        <property name="orderItemIds" type="int[]"/>
+        <property name="orderItemIds" type="int[]" singular="orderItemIds"/>
         <property name="paymentMethod" type="PaymentMethod"/>
         <property name="storeName" type="string"/>
         <property name="percentageBuffer" type="int"/>
@@ -107,7 +109,7 @@
 
     <transfer name="FirstDataHttpRequest">
         <property name="body" type="string"/>
-        <property name="headers" type="array"/>
+        <property name="headers" type="array" singular="headers"/>
     </transfer>
 
     <transfer name="FirstDataApiResponse">
@@ -134,7 +136,6 @@
         <property name="merchantId" type="string"/>
         <property name="transactionTime" type="string"/>
         <property name="approvedAmount" type="FirstDataApiApprovedAmountResponse"/>
-        <property name="transactionTime" type="string"/>
         <property name="schemeTransactionId" type="string"/>
         <property name="processor" type="FirstDataApiProcessorResponse"/>
     </transfer>
@@ -145,7 +146,7 @@
     </transfer>
 
     <transfer name="PaymentCard">
-        <property name="expiryDate" type="array"/>
+        <property name="expiryDate" type="array" singular="expiryDate"/>
         <property name="bin" type="string"/>
         <property name="last4" type="string"/>
         <property name="brand" type="string"/>
@@ -154,7 +155,7 @@
     <transfer name="FirstDataApiApprovedAmountResponse">
         <property name="total" type="string"/>
         <property name="currency" type="string"/>
-        <property name="components" type="array"/>
+        <property name="components" type="array" singular="components"/>
     </transfer>
 
     <transfer name="FirstDataApiProcessorResponse">
@@ -164,7 +165,7 @@
         <property name="network" type="string"/>
         <property name="associationResponseCode" type="string"/>
         <property name="responseMessage" type="string"/>
-        <property name="avsResponse" type="array"/>
+        <property name="avsResponse" type="array" singular="avsResponse"/>
         <property name="transactionIntegrityClass" type="string"/>
     </transfer>
 
@@ -209,6 +210,7 @@
 
     <transfer name="RestCheckoutRequestAttributes">
         <property name="firstDataTransactionData" type="FirstDataTransactionData"/>
+        <property name="payments" type="RestPayment[]" singular="payment" restRequestParameter="yes"/>
     </transfer>
 
     <transfer name="FirstDataTransactionData">
@@ -245,10 +247,101 @@
 
     <transfer name="FirstDataOmsCommandRequest">
         <property name="order" type="Order"/>
-        <property name="salesOrderItemIds" type="int[]"/>
+        <property name="salesOrderItemIds" type="int[]" singular="salesOrderItemIds"/>
     </transfer>
 
     <transfer name="Order">
+        <property name="payments" type="Payment[]" singular="payment"/>
+        <property name="currencyIsoCode" type="string"/>
         <property name="idSalesOrder" type="int"/>
+        <property name="totals" type="Totals"/>
+        <property name="items" type="Item[]" singular="item"/>
+        <property name="createdAt" type="string"/>
+    </transfer>
+
+    <transfer name="RestCheckoutDataResponseAttributes">
+        <property name="firstDataPaymentProcessingLink" type="string"/>
+        <property name="firstDataCreditCardParameters" type="FirstDataCreditCardParameters"/>
+        <property name="selectedPaymentMethods" type="RestPaymentMethod[]" singular="selectedPaymentMethod"/>
+    </transfer>
+
+    <transfer name="RestCheckoutData">
+        <property name="quote" type="Quote"/>
+    </transfer>
+
+    <transfer name="RestPayment">
+        <property name="paymentProviderName" type="string" restRequestParameter="required"/>
+        <property name="paymentMethodName" type="string" restRequestParameter="required"/>
+        <property name="paymentSelection" type="string"/>
+    </transfer>
+
+    <transfer name="RestErrorMessage">
+        <property name="status" type="int"/>
+        <property name="code" type="string"/>
+        <property name="detail" type="string"/>
+    </transfer>
+
+    <transfer name="RestErrorCollection">
+        <property name="restErrors" type="RestErrorMessage[]" singular="restError"/>
+    </transfer>
+
+    <transfer name="Refund">
+        <property name="items" singular="item" type="Item[]"/>
+    </transfer>
+
+    <transfer name="Quote">
+        <property name="totals" type="Totals"/>
+        <property name="customer" type="Customer"/>
+        <property name="payment" type="Payment" deprecated="Use payments property instead."/>
+        <property name="payments" type="Payment[]" singular="payment"/>
+        <property name="shippingAddress" type="Address" deprecated="Use item level shipping addresses (item.shipment.shippingAddress) instead."/>
+        <property name="billingAddress" type="Address"/>
+        <property name="currency" type="Currency"/>
+        <property name="customerReference" type="string"/>
+    </transfer>
+
+    <transfer name="SaveOrder">
+        <property name="orderItems" type="Item[]" singular="orderItem"/>
+        <property name="idSalesOrder" type="int"/>
+        <property name="orderReference" type="string"/>
+    </transfer>
+
+    <transfer name="Item">
+        <property name="idSalesOrderItem" type="int"/>
+        <property name="refundableAmount" type="int"/>
+        <property name="sumPriceToPayAggregation" type="int"/>
+    </transfer>
+
+    <transfer name="CheckoutResponse">
+    </transfer>
+
+    <transfer name="Currency">
+        <property name="code" type="string"/>
+    </transfer>
+
+    <transfer name="Customer">
+        <property name="email" type="string"/>
+        <property name="phone" type="string"/>
+
+    </transfer>
+
+    <transfer name="Address">
+        <property name="firstName" type="string"/>
+        <property name="address2" type="string"/>
+        <property name="address1" type="string"/>
+        <property name="lastName" type="string"/>
+        <property name="zipCode" type="string"/>
+        <property name="city" type="string"/>
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="RestPaymentMethod">
+        <property name="paymentMethodName" type="string"/>
+    </transfer>
+
+    <transfer name="Totals">
+        <property name="grandTotal" type="int"/>
+        <property name="priceToPay" type="int"/>
+        <property name="shipmentTotal" type="int"/>
     </transfer>
 </transfers>

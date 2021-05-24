@@ -9,6 +9,7 @@ namespace SprykerEco\Glue\FirstData;
 
 use Spryker\Glue\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Glue\Kernel\Container;
+use SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceBridge;
 
 class FirstDataDependencyProvider extends AbstractBundleDependencyProvider
 {
@@ -34,9 +35,9 @@ class FirstDataDependencyProvider extends AbstractBundleDependencyProvider
      */
     protected function addUtilTextService(Container $container): Container
     {
-        $container[static::SERVICE_UTIL_TEXT] = function (Container $container) {
-            return $container->getLocator()->utilText()->service();
-        };
+        $container->set(static::SERVICE_UTIL_TEXT, function (Container $container) {
+            return new FirstDataToUtilTextServiceBridge($container->getLocator()->utilText()->service());
+        });
 
         return $container;
     }

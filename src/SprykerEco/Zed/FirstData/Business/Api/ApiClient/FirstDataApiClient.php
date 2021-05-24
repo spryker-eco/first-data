@@ -78,7 +78,7 @@ class FirstDataApiClient implements FirstDataApiClientInterface
             $guzzleHttpResponse = $this->guzzleHttpClientAdapter->post(
                 $this->getRequestUrl($firstDataApiRequestTransfer),
                 $firstDataHttpRequestTransfer->getHeaders(),
-                $firstDataHttpRequestTransfer->getBody()
+                $firstDataHttpRequestTransfer->getBodyOrFail()
             );
         } catch (FirstDataGuzzleRequestException $requestException) {
             $isSuccess = false;
@@ -86,7 +86,7 @@ class FirstDataApiClient implements FirstDataApiClientInterface
         }
 
         $firstDataApiResponseTransfer = $this->firstDataResponseConverter->convertToResponseTransfer($guzzleHttpResponse, $isSuccess);
-
+        dd(1123);
         $this->firstDataApiLogger
             ->logApiCall(
                 $firstDataHttpRequestTransfer,
@@ -106,7 +106,7 @@ class FirstDataApiClient implements FirstDataApiClientInterface
     {
         return sprintf(
             '%s/%s',
-            $this->firstDataConfig->getApiEndpoint($firstDataApiRequestTransfer->getRequestType()),
+            $this->firstDataConfig->getApiEndpoint($firstDataApiRequestTransfer->getRequestTypeOrFail()),
             $firstDataApiRequestTransfer->getTransactionId()
         );
     }
