@@ -22,7 +22,7 @@
     },
     "require-dev": {
         "phpstan/phpstan": "*",
-        "spryker-eco/checkout-rest-api": "*",
+        "spryker/checkout-rest-api": "*",
         "spryker/code-sniffer": "*",
         "spryker/customer": "*",
         "spryker/glue-application": "*",
@@ -31,7 +31,7 @@
         "spryker/testify": "*"
     },
     "suggest": {
-        "spryker-eco/checkout-rest-api": "If you want use with glue.",
+        "spryker/checkout-rest-api": "If you want use with glue.",
         "spryker/checkout": "CheckoutPostSaveHookInterface is used.",
         "spryker/checkout-rest-api": "QuoteMapperPluginInterface is used.",
         "spryker/glue-application": "If you want use with glue."
