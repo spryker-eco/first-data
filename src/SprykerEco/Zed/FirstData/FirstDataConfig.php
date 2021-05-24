@@ -132,8 +132,6 @@ class FirstDataConfig extends AbstractBundleConfig
     /**
      * @api
      *
-     * @api
-     *
      * @return string
      */
     public function getOmsStatusCancelRetry(): string
