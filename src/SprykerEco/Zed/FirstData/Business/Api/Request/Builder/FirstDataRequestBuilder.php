@@ -97,6 +97,7 @@ class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
             if ($firstDataRequestConverter->isApplicable($firstDataApiRequestTransfer)) {
                 $requestPayload = $firstDataRequestConverter->convertRequestTransferToArray($firstDataApiRequestTransfer);
                 $requestPayload = $this->removeRedundantParams($requestPayload);
+
                 break;
             }
         }

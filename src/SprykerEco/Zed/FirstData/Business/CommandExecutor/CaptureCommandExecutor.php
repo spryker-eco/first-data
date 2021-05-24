@@ -82,7 +82,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
         if (!$firstDataApiResponseTransfer->getIsSuccess()) {
             return;
         }
-        dd(123);
+
         $paymentFirstDataItemTransfers = $this->firstDataRepository
             ->getPaymentFirstDataItemCollection(
                 $paymentFirstDataTransfer,
@@ -99,7 +99,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
      */
     protected function executeTransactionUpdatePaymentFirstDataItems(array $paymentFirstDataItemTransfers): void
     {
-        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers): void {
             foreach ($paymentFirstDataItemTransfers as $paymentFirstDataItemTransfer) {
                 $paymentFirstDataItemTransfer->setStatus($this->firstDataConfig->getOmsStatusCaptured());
                 $this->entityManager->savePaymentFirstDataItem($paymentFirstDataItemTransfer);

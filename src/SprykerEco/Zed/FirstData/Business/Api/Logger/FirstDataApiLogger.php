@@ -56,7 +56,7 @@ class FirstDataApiLogger implements FirstDataApiLoggerInterface
             $firstDataHttpRequestTransfer,
             $firstDataApiResponseTransfer,
             $requestType
-        ) {
+        ): void {
             $this->executeSavePaymentFirstDataApiLogTransaction(
                 $firstDataHttpRequestTransfer,
                 $firstDataApiResponseTransfer,

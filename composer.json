@@ -31,7 +31,6 @@
         "spryker/testify": "*"
     },
     "suggest": {
-        "spryker/checkout-rest-api": "If you want use with glue.",
         "spryker/checkout": "CheckoutPostSaveHookInterface is used.",
         "spryker/checkout-rest-api": "QuoteMapperPluginInterface is used.",
         "spryker/glue-application": "If you want use with glue."

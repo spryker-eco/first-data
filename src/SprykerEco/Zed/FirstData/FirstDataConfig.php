@@ -50,6 +50,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getPaymentAuthorizationTimeOut(): string
@@ -58,6 +60,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusNew(): string
@@ -66,6 +70,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusAuthorized(): string
@@ -74,6 +80,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsMaxCaptureRetryCount(): string
@@ -82,6 +90,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusCaptureRequested(): string
@@ -90,6 +100,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusCaptured(): string
@@ -98,6 +110,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsMaxCancelRetryCount(): string
@@ -106,6 +120,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusCancelRequested(): string
@@ -114,6 +130,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @api
      *
      * @return string
@@ -134,6 +152,8 @@ class FirstDataConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getOmsStatusCanceled(): string

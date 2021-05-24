@@ -95,7 +95,7 @@ class CancelCommandExecutor implements FirstDataCommandExecutorInterface
      */
     protected function executeTransactionUpdatePaymentFirstDataItems(array $paymentFirstDataItemTransfers): void
     {
-        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers): void {
             foreach ($paymentFirstDataItemTransfers as $paymentFirstDataItemTransfer) {
                 $paymentFirstDataItemTransfer->setStatus($this->firstDataConfig->getOmsStatusCanceled());
                 $this->entityManager->savePaymentFirstDataItem($paymentFirstDataItemTransfer);
