@@ -85,5 +85,7 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
         if (!$firstDataApiResponseTransfer->getIsSuccess()) {
             $checkoutResponse->setIsSuccess(false);
         }
+
+        $this->entityManager->saveCardToken($quoteTransfer->getCustomerOrFail(), $cardToken);
     }
 }

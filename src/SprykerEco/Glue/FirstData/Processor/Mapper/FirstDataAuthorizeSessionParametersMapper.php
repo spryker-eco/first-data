@@ -36,7 +36,9 @@ class FirstDataAuthorizeSessionParametersMapper implements FirstDataAuthorizeSes
         RestCheckoutDataResponseAttributesTransfer $restCheckoutDataResponseAttributesTransfer,
         RestCheckoutDataTransfer $restCheckoutDataTransfer
     ): RestCheckoutDataResponseAttributesTransfer {
-        $firstDataApiResponseTransfer = $this->firstDataClient->getAuthorizeSessionResponse();
+        $firstDataApiResponseTransfer = $this->firstDataClient->getAuthorizeSessionResponse(
+            $restCheckoutDataTransfer->getQuoteOrFail()
+        );
 
         $restCheckoutDataResponseAttributesTransfer->setFirstDataAuthorizeSessionParameters(
             $firstDataApiResponseTransfer->getAuthorizeSessionresponseOrFail()

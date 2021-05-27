@@ -10,6 +10,7 @@ namespace SprykerEco\Client\FirstData;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 
 interface FirstDataClientInterface
 {
@@ -52,5 +53,5 @@ interface FirstDataClientInterface
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer;
+    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer;
 }

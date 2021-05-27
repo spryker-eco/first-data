@@ -9,6 +9,7 @@ namespace SprykerEco\Client\FirstData\Zed;
 
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 use Spryker\Client\ZedRequest\ZedRequestClientInterface;
 
 class FirstDataStub implements FirstDataStubInterface
@@ -45,16 +46,16 @@ class FirstDataStub implements FirstDataStubInterface
     }
 
     /**
-     * @uses \SprykerEco\Zed\FirstData\Communication\Controller\GatewayController::getAuthorizeSessionResponseTransferAction()
+     * @uses \SprykerEco\Zed\FirstData\Communication\Controller\GatewayController::getAuthorizeSessionResponseAction()
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer
+    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
     {
         /** @var \Generated\Shared\Transfer\FirstDataApiResponseTransfer $firstDataApiResponseTransfer */
         $firstDataApiResponseTransfer = $this->zedRequestClient->call(
             '/first-data/gateway/get-authorize-session-response',
-            new FirstDataApiResponseTransfer()
+            $quoteTransfer
         );
 
         return $firstDataApiResponseTransfer;

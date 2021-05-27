@@ -9,6 +9,7 @@ namespace SprykerEco\Client\FirstData\Zed;
 
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 
 interface FirstDataStubInterface
 {
@@ -26,5 +27,5 @@ interface FirstDataStubInterface
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer;
+    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer;
 }
