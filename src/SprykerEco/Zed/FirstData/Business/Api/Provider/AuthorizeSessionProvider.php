@@ -11,6 +11,7 @@ use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\QuoteTransfer;
 use SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataRepositoryInterface;
 
 class AuthorizeSessionProvider implements AuthorizeSessionProviderInterface
 {
@@ -24,8 +25,10 @@ class AuthorizeSessionProvider implements AuthorizeSessionProviderInterface
     /**
      * @param \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface $firstDataApiClient
      */
-    public function __construct(FirstDataApiClientInterface $firstDataApiClient)
-    {
+    public function __construct(
+        FirstDataApiClientInterface $firstDataApiClient,
+        FirstDataRepositoryInterface $firstDataRepository
+    ) {
         $this->firstDataApiClient = $firstDataApiClient;
     }
 
@@ -36,8 +39,10 @@ class AuthorizeSessionProvider implements AuthorizeSessionProviderInterface
      */
     public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
     {
-        return $this->firstDataApiClient->performApiRequest(
+        $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest(
             (new FirstDataApiRequestTransfer())->setRequestType(static::AUTHORIZE_SESSION_REQUEST_TYPE_NAME)
         );
+
+        $firstDataApiResponseTransfer->getAuthorizeSessionresponseOrFail()->setCustomerTokens();
     }
 }

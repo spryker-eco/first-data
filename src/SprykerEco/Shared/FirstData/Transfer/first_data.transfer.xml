@@ -135,7 +135,7 @@
     </transfer>
 
     <transfer name="CustomerToken">
-        <property name="clientToken" type="string"/>
+        <property name="cardToken" type="string"/>
     </transfer>
 
     <transfer name="FirstDataApiClientResponse">
