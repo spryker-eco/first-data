@@ -86,7 +86,7 @@ class FirstDataApiClient implements FirstDataApiClientInterface
         }
 
         $firstDataApiResponseTransfer = $this->firstDataResponseConverter->convertToResponseTransfer($guzzleHttpResponse, $isSuccess);
-        dd(1123);
+
         $this->firstDataApiLogger
             ->logApiCall(
                 $firstDataHttpRequestTransfer,

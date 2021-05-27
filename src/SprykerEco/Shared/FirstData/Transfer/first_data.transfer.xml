@@ -92,7 +92,7 @@
         <property name="transactionId" type="string"/>
         <property name="order" type="Order"/>
         <property name="refund" type="Refund"/>
-        <property name="orderItemIds" type="int[]" singular="orderItemIds"/>
+        <property name="orderItemIds" type="int[]" singular="orderItemId"/>
         <property name="paymentMethod" type="PaymentMethod"/>
         <property name="storeName" type="string"/>
         <property name="percentageBuffer" type="int"/>
@@ -109,7 +109,7 @@
 
     <transfer name="FirstDataHttpRequest">
         <property name="body" type="string"/>
-        <property name="headers" type="array" singular="headers"/>
+        <property name="headers" type="array" singular="header"/>
     </transfer>
 
     <transfer name="FirstDataApiResponse">
@@ -155,7 +155,7 @@
     <transfer name="FirstDataApiApprovedAmountResponse">
         <property name="total" type="string"/>
         <property name="currency" type="string"/>
-        <property name="components" type="array" singular="components"/>
+        <property name="components" type="array" singular="component"/>
     </transfer>
 
     <transfer name="FirstDataApiProcessorResponse">
@@ -165,7 +165,7 @@
         <property name="network" type="string"/>
         <property name="associationResponseCode" type="string"/>
         <property name="responseMessage" type="string"/>
-        <property name="avsResponse" type="array" singular="avsResponse"/>
+        <property name="avsResponse" type="array" singular="avsRespons"/>
         <property name="transactionIntegrityClass" type="string"/>
     </transfer>
 
@@ -247,7 +247,7 @@
 
     <transfer name="FirstDataOmsCommandRequest">
         <property name="order" type="Order"/>
-        <property name="salesOrderItemIds" type="int[]" singular="salesOrderItemIds"/>
+        <property name="salesOrderItemIds" type="int[]" singular="salesOrderItemId"/>
     </transfer>
 
     <transfer name="Order">
