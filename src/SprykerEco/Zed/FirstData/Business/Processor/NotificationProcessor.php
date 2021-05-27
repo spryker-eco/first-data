@@ -47,7 +47,7 @@ class NotificationProcessor implements NotificationProcessorInterface
      */
     public function processNotification(FirstDataNotificationTransfer $firstDataNotificationTransfer): FirstDataNotificationTransfer
     {
-        $this->getTransactionHandler()->handleTransaction(function () use ($firstDataNotificationTransfer) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($firstDataNotificationTransfer): void {
             $this->executeProcessNotificationTransaction($firstDataNotificationTransfer);
         });
 

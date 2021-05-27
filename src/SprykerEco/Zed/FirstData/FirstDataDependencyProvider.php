@@ -9,6 +9,8 @@ namespace SprykerEco\Zed\FirstData;
 
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
+use SprykerEco\Zed\FirstData\Dependency\Facade\FirstDataToSalesFacadeBridge;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceBridge;
 
 class FirstDataDependencyProvider extends AbstractBundleDependencyProvider
 {
@@ -54,7 +56,7 @@ class FirstDataDependencyProvider extends AbstractBundleDependencyProvider
     protected function addUtilEncodingService(Container $container): Container
     {
         $container->set(static::SERVICE_UTIL_ENCODING, function (Container $container) {
-            return $container->getLocator()->utilEncoding()->service();
+            return new FirstDataToUtilEncodingServiceBridge($container->getLocator()->utilEncoding()->service());
         });
 
         return $container;
@@ -82,7 +84,7 @@ class FirstDataDependencyProvider extends AbstractBundleDependencyProvider
     protected function addSalesFacade(Container $container): Container
     {
         $container->set(static::FACADE_SALES, function (Container $container) {
-            return $container->getLocator()->sales()->facade();
+            return new FirstDataToSalesFacadeBridge($container->getLocator()->sales()->facade());
         });
 
         return $container;

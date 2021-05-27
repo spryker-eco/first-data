@@ -34,7 +34,7 @@ class PaymentAuthorizationTimeOutChecker implements PaymentAuthorizationTimeOutC
      */
     public function check(OrderTransfer $orderTransfer): bool
     {
-        $paymentAuthTimedOutDateTime = new DateTime($orderTransfer->getCreatedAt());
+        $paymentAuthTimedOutDateTime = new DateTime($orderTransfer->getCreatedAtOrFail());
         $interval = DateInterval::createFromDateString($this->firstDataConfig->getPaymentAuthorizationTimeOut());
         $paymentAuthTimedOutDateTime->add($interval);
 

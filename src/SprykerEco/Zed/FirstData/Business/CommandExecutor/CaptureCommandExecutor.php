@@ -65,7 +65,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
     public function executeOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void
     {
         $paymentFirstDataTransfer = $this->firstDataRepository
-            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrder()->getIdSalesOrder());
+            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrderOrFail()->getIdSalesOrderOrFail());
 
         if (!$paymentFirstDataTransfer) {
             return;
@@ -99,7 +99,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
      */
     protected function executeTransactionUpdatePaymentFirstDataItems(array $paymentFirstDataItemTransfers): void
     {
-        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers): void {
             foreach ($paymentFirstDataItemTransfers as $paymentFirstDataItemTransfer) {
                 $paymentFirstDataItemTransfer->setStatus($this->firstDataConfig->getOmsStatusCaptured());
                 $this->entityManager->savePaymentFirstDataItem($paymentFirstDataItemTransfer);

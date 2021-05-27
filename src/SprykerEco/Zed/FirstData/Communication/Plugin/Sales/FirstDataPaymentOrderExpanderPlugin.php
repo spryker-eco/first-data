@@ -19,6 +19,9 @@ use Spryker\Zed\SalesExtension\Dependency\Plugin\OrderExpanderPluginInterface;
 class FirstDataPaymentOrderExpanderPlugin extends AbstractPlugin implements OrderExpanderPluginInterface
 {
     /**
+     * {@inheritDoc}
+     * - Expands order with first data payment.
+     *
      * @api
      *
      * @param \Generated\Shared\Transfer\OrderTransfer $orderTransfer

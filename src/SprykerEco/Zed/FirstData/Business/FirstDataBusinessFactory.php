@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\FirstData\Business;
 
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use SprykerEco\Client\FirstData\FirstDataClientInterface;
 use SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClient;
@@ -43,10 +42,10 @@ use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaver;
 use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaverInterface;
 use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapter;
 use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapterInterface;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface;
 use SprykerEco\Zed\FirstData\FirstDataDependencyProvider;
 use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManager;
 use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
-use SprykerEco\Zed\Sales\Business\SalesFacadeInterface;
 
 /**
  * @method \SprykerEco\Zed\FirstData\FirstDataConfig getConfig()
@@ -242,17 +241,9 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\Sales\Business\SalesFacadeInterface
+     * @return \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface
      */
-    public function getSalesFacade(): SalesFacadeInterface
-    {
-        return $this->getProvidedDependency(FirstDataDependencyProvider::FACADE_SALES);
-    }
-
-    /**
-     * @return \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
-     */
-    public function getUtilEncodingService(): UtilEncodingServiceInterface
+    public function getUtilEncodingService(): FirstDataToUtilEncodingServiceInterface
     {
         return $this->getProvidedDependency(FirstDataDependencyProvider::SERVICE_UTIL_ENCODING);
     }

@@ -57,7 +57,7 @@ class FirstDataOrderPaymentSaver implements FirstDataOrderPaymentSaverInterface
             return;
         }
 
-        $this->getTransactionHandler()->handleTransaction(function () use ($quoteTransfer, $saveOrderTransfer) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($quoteTransfer, $saveOrderTransfer): void {
             $this->executeSavePaymentEntitiesTransaction($quoteTransfer, $saveOrderTransfer);
         });
     }

@@ -8,7 +8,7 @@
 namespace SprykerEco\Glue\FirstData;
 
 use Spryker\Glue\Kernel\AbstractFactory;
-use Spryker\Service\UtilText\UtilTextServiceInterface;
+use SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface;
 use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataCreditCardParametersMapper;
 use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataCreditCardParametersMapperInterface;
 use SprykerEco\Glue\FirstData\Processor\Saver\FirstDataNotificationSaver;
@@ -35,9 +35,9 @@ class FirstDataFactory extends AbstractFactory
     }
 
     /**
-     * @return \Spryker\Service\UtilText\UtilTextServiceInterface
+     * @return \SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface
      */
-    public function getUtilTextService(): UtilTextServiceInterface
+    public function getUtilTextService(): FirstDataToUtilTextServiceInterface
     {
         return $this->getProvidedDependency(FirstDataDependencyProvider::SERVICE_UTIL_TEXT);
     }

@@ -65,7 +65,7 @@ class CancelCommandExecutor implements FirstDataCommandExecutorInterface
     public function executeOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void
     {
         $paymentFirstDataTransfer = $this->firstDataRepository
-            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrder()->getIdSalesOrder());
+            ->findPaymentFirstDataByIdSalesOrder($firstDataOmsCommandRequestTransfer->getOrderOrFail()->getIdSalesOrderOrFail());
 
         if (!$paymentFirstDataTransfer) {
             return;
@@ -95,7 +95,7 @@ class CancelCommandExecutor implements FirstDataCommandExecutorInterface
      */
     protected function executeTransactionUpdatePaymentFirstDataItems(array $paymentFirstDataItemTransfers): void
     {
-        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers) {
+        $this->getTransactionHandler()->handleTransaction(function () use ($paymentFirstDataItemTransfers): void {
             foreach ($paymentFirstDataItemTransfers as $paymentFirstDataItemTransfer) {
                 $paymentFirstDataItemTransfer->setStatus($this->firstDataConfig->getOmsStatusCanceled());
                 $this->entityManager->savePaymentFirstDataItem($paymentFirstDataItemTransfer);

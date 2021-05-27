@@ -43,7 +43,7 @@ class OrderExpander implements OrderExpanderInterface
         }
 
         $paymentFirstDataTransfer = $this->firstDataRepository
-            ->findPaymentFirstDataByIdSalesOrder($orderTransfer->getIdSalesOrder());
+            ->findPaymentFirstDataByIdSalesOrder($orderTransfer->getIdSalesOrderOrFail());
 
         if ($paymentFirstDataTransfer === null) {
             return $orderTransfer;

@@ -7,10 +7,10 @@
 
 namespace SprykerEco\Glue\FirstData\Plugin\CheckoutRestApi;
 
+use Spryker\Glue\CheckoutRestApi\CheckoutRestApiConfig;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 use Spryker\Glue\GlueApplicationExtension\Dependency\Plugin\FormatResponseDataPluginInterface;
 use Spryker\Glue\Kernel\AbstractPlugin;
-use SprykerEco\Glue\CheckoutRestApi\CheckoutRestApiConfig;
 
 class FirstDataCreditCardParametersCheckoutDataFormatResponsePlugin extends AbstractPlugin implements FormatResponseDataPluginInterface
 {
@@ -27,7 +27,8 @@ class FirstDataCreditCardParametersCheckoutDataFormatResponsePlugin extends Abst
      */
     public function format(RestRequestInterface $request, array $preparedResponseData): array
     {
-        if ($request->getResource()->getType() !== CheckoutRestApiConfig::RESOURCE_CHECKOUT_DATA
+        if (
+            $request->getResource()->getType() !== CheckoutRestApiConfig::RESOURCE_CHECKOUT_DATA
             || empty($preparedResponseData['data']['attributes']['firstDataCreditCardParameters'])
         ) {
             return $preparedResponseData;

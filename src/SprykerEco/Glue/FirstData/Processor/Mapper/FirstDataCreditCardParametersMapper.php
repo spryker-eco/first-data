@@ -12,12 +12,14 @@ use Generated\Shared\Transfer\FirstDataCreditCardParametersTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer;
 use Generated\Shared\Transfer\RestCheckoutDataTransfer;
-use Spryker\Service\UtilText\UtilTextServiceInterface;
 use SprykerEco\Client\FirstData\FirstDataClientInterface;
+use SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface;
 use SprykerEco\Glue\FirstData\FirstDataConfig;
 
 class FirstDataCreditCardParametersMapper implements FirstDataCreditCardParametersMapperInterface
 {
+    protected const DEFAULT_OID_LENGTH = 32;
+
     /**
      * @var \SprykerEco\Glue\FirstData\FirstDataConfig
      */
@@ -29,19 +31,19 @@ class FirstDataCreditCardParametersMapper implements FirstDataCreditCardParamete
     protected $firstDataClient;
 
     /**
-     * @var \Spryker\Service\UtilText\UtilTextServiceInterface
+     * @var \SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface
      */
     protected $utilTextService;
 
     /**
      * @param \SprykerEco\Glue\FirstData\FirstDataConfig $firstDataConfig
      * @param \SprykerEco\Client\FirstData\FirstDataClientInterface $firstDataClient
-     * @param \Spryker\Service\UtilText\UtilTextServiceInterface $utilTextService
+     * @param \SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface $utilTextService
      */
     public function __construct(
         FirstDataConfig $firstDataConfig,
         FirstDataClientInterface $firstDataClient,
-        UtilTextServiceInterface $utilTextService
+        FirstDataToUtilTextServiceInterface $utilTextService
     ) {
         $this->firstDataConfig = $firstDataConfig;
         $this->firstDataClient = $firstDataClient;
@@ -97,7 +99,7 @@ class FirstDataCreditCardParametersMapper implements FirstDataCreditCardParamete
      */
     protected function calculateTotal(RestCheckoutDataTransfer $restCheckoutDataTransfer): float
     {
-        $price = $restCheckoutDataTransfer->getQuote()->getTotals()->getPriceToPay() * (1 + (int)$this->firstDataConfig->getAdditionAuthPercentageBuffer() / 100);
+        $price = $restCheckoutDataTransfer->getQuoteOrFail()->getTotalsOrFail()->getPriceToPay() * (1 + (int)$this->firstDataConfig->getAdditionAuthPercentageBuffer() / 100);
 
         return (float)($price / 100);
     }
@@ -122,42 +124,40 @@ class FirstDataCreditCardParametersMapper implements FirstDataCreditCardParamete
         $firstDataHashRequestTransfer->setHashAlgorithm($this->firstDataConfig->getHmacHashAlgo());
         $firstDataHashRequestTransfer->setStoreName($this->firstDataConfig->getStoreName());
         $firstDataHashRequestTransfer->setAuthenticateTransaction($this->firstDataConfig->getIs3dSecure());
-        $firstDataHashRequestTransfer->setOid($this->utilTextService->generateRandomString(32));
+        $firstDataHashRequestTransfer->setOid($this->utilTextService->generateRandomString(static::DEFAULT_OID_LENGTH));
         $firstDataHashRequestTransfer->setChargeTotal((string)$this->calculateTotal($restCheckoutDataTransfer));
         $firstDataHashRequestTransfer->setCurrency(
-            $this->firstDataConfig->getIsoNumberByCode($restCheckoutDataTransfer->getQuote()->getCurrency()->getCode())
+            $this->firstDataConfig->getIsoNumberByCode($restCheckoutDataTransfer->getQuoteOrFail()->getCurrencyOrFail()->getCodeOrFail())
         );
-        $firstDataHashRequestTransfer->setCustomerId($restCheckoutDataTransfer->getQuote()->getCustomerReference());
-        $firstDataHashRequestTransfer->setEmail($restCheckoutDataTransfer->getQuote()->getCustomer()->getEmail());
+        $firstDataHashRequestTransfer->setCustomerId($restCheckoutDataTransfer->getQuoteOrFail()->getCustomerReference());
+        $firstDataHashRequestTransfer->setEmail($restCheckoutDataTransfer->getQuoteOrFail()->getCustomerOrFail()->getEmail());
         $firstDataHashRequestTransfer->setResponseSuccessURL($this->firstDataConfig->getResponseSuccessUrl());
         $firstDataHashRequestTransfer->setResponseFailURL($this->firstDataConfig->getResponseFailUrl());
         $firstDataHashRequestTransfer->setTransactionNotificationURL($this->firstDataConfig->getTransactionNotificationUrl());
 
-        if ($restCheckoutDataTransfer->getQuote()->getBillingAddress()) {
+        if ($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddress()) {
             $fullName = sprintf(
                 '%s %s',
-                $restCheckoutDataTransfer->getQuote()->getBillingAddress()->getFirstName() ?: '',
-                $restCheckoutDataTransfer->getQuote()->getBillingAddress()->getLastName() ?: ''
+                $restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getFirstName() ?: '',
+                $restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getLastName() ?: ''
             );
 
-            $firstDataHashRequestTransfer->setPhone($restCheckoutDataTransfer->getQuote()->getCustomer()->getPhone());
+            $firstDataHashRequestTransfer->setPhone($restCheckoutDataTransfer->getQuoteOrFail()->getCustomerOrFail()->getPhone());
             $firstDataHashRequestTransfer->setBname($fullName);
             $firstDataHashRequestTransfer->setSname($fullName);
-            $firstDataHashRequestTransfer->setBaddr1($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getAddress1());
-            $firstDataHashRequestTransfer->setBaddr2($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getAddress2());
-            $firstDataHashRequestTransfer->setBcity($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getCity());
-            $firstDataHashRequestTransfer->setBzip($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getZipCode());
-            $firstDataHashRequestTransfer->setBstate($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getRegionIso2Code());
-            $firstDataHashRequestTransfer->setBcountry($restCheckoutDataTransfer->getQuote()->getBillingAddress()->getIso2Code());
+            $firstDataHashRequestTransfer->setBaddr1($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getAddress1());
+            $firstDataHashRequestTransfer->setBaddr2($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getAddress2());
+            $firstDataHashRequestTransfer->setBcity($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getCity());
+            $firstDataHashRequestTransfer->setBzip($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getZipCode());
+            $firstDataHashRequestTransfer->setBcountry($restCheckoutDataTransfer->getQuoteOrFail()->getBillingAddressOrFail()->getIso2Code());
         }
 
-        if ($restCheckoutDataTransfer->getQuote()->getShippingAddress()) {
-            $firstDataHashRequestTransfer->setSaddr1($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getAddress1());
-            $firstDataHashRequestTransfer->setSaddr2($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getAddress2());
-            $firstDataHashRequestTransfer->setSzip($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getZipCode());
-            $firstDataHashRequestTransfer->setScity($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getCity());
-            $firstDataHashRequestTransfer->setSstate($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getRegionIso2Code());
-            $firstDataHashRequestTransfer->setScountry($restCheckoutDataTransfer->getQuote()->getShippingAddress()->getIso2Code());
+        if ($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddress()) {
+            $firstDataHashRequestTransfer->setSaddr1($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddressOrFail()->getAddress1());
+            $firstDataHashRequestTransfer->setSaddr2($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddressOrFail()->getAddress2());
+            $firstDataHashRequestTransfer->setSzip($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddressOrFail()->getZipCode());
+            $firstDataHashRequestTransfer->setScity($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddressOrFail()->getCity());
+            $firstDataHashRequestTransfer->setScountry($restCheckoutDataTransfer->getQuoteOrFail()->getShippingAddressOrFail()->getIso2Code());
         }
 
         return $firstDataHashRequestTransfer;
