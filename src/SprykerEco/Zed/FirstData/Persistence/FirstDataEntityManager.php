@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataApiLogTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataItemTransfer;
@@ -39,6 +40,30 @@ class FirstDataEntityManager extends AbstractEntityManager implements FirstDataE
 
         return (new PaymentFirstDataTransfer())
             ->fromArray($paymentFirstDataEntity->toArray(), true);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customer
+     * @param string $cardToken
+     *
+     * @return void
+     */
+    public function saveCardToken(CustomerTransfer $customer, string $cardToken): void
+    {
+        $paymentFirstDataCardTokenEntity = $this->getFactory()
+            ->createPaymentFirstDataCardTokenQuery()
+            ->filterByCardToken($cardToken)
+            ->findOneOrCreate();
+
+        $paymentFirstDataCardTokenEntity->save();
+
+        $customerToFirstDataCardTokenEntity = $this->getFactory()
+            ->createCustomerToFirstDataCardTokenQuery()
+            ->filterByFkCustomer($customer->getIdCustomer())
+            ->filterByFkPaymentFirstDataCardToken($paymentFirstDataCardTokenEntity->getIdPaymentFirstDataCardToken())
+            ->findOneOrCreate();
+
+        $customerToFirstDataCardTokenEntity->save();
     }
 
     /**
