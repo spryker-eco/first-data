@@ -27,8 +27,7 @@ class FirstDataCreditCardParametersCheckoutDataFormatResponsePlugin extends Abst
      */
     public function format(RestRequestInterface $request, array $preparedResponseData): array
     {
-        if (
-            $request->getResource()->getType() !== CheckoutRestApiConfig::RESOURCE_CHECKOUT_DATA
+        if ($request->getResource()->getType() !== CheckoutRestApiConfig::RESOURCE_CHECKOUT_DATA
             || empty($preparedResponseData['data']['attributes']['firstDataCreditCardParameters'])
         ) {
             return $preparedResponseData;

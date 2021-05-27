@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Client\FirstData;
 
+use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 
@@ -41,4 +42,15 @@ interface FirstDataClientInterface
      * @return \Generated\Shared\Transfer\FirstDataNotificationTransfer
      */
     public function processNotification(FirstDataNotificationTransfer $firstDataNotificationTransfer): FirstDataNotificationTransfer;
+
+    /**
+     * Specification:
+     * - Makes api call to the First Data in order to receive authorize session data.
+     * - Makes Zed request.
+     *
+     * @api
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer;
 }

@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Client\FirstData\Zed;
 
+use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 
 interface FirstDataStubInterface
@@ -19,4 +20,11 @@ interface FirstDataStubInterface
      * @return \Generated\Shared\Transfer\FirstDataNotificationTransfer
      */
     public function processNotificationAction(FirstDataNotificationTransfer $firstDataNotificationTransfer): FirstDataNotificationTransfer;
+
+    /**
+     * @uses \SprykerEco\Zed\FirstData\Communication\Controller\GatewayController::getAuthorizeSessionResponseTransferAction()
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer;
 }

@@ -95,7 +95,10 @@
         <property name="orderItemIds" type="int[]" singular="orderItemIds"/>
         <property name="paymentMethod" type="PaymentMethod"/>
         <property name="storeName" type="string"/>
+        <property name="storeId" type="string"/>
         <property name="percentageBuffer" type="int"/>
+        <property name="totals" type="Totals"/>
+        <property name="currencyIsoCode" type="string"/>
     </transfer>
 
     <transfer name="PaymentMethod">
@@ -108,6 +111,7 @@
     </transfer>
 
     <transfer name="FirstDataHttpRequest">
+        <property name="requestUrl" type="string"/>
         <property name="body" type="string"/>
         <property name="headers" type="array" singular="headers"/>
     </transfer>
@@ -116,11 +120,22 @@
         <property name="isSuccess" type="bool"/>
         <property name="error" type="FirstDataApiErrorResponse"/>
         <property name="clientResponse" type="FirstDataApiClientResponse"/>
+        <property name="authorizeSessionresponse" type="AuthorizeSessionResponse"/>
     </transfer>
 
     <transfer name="FirstDataApiErrorResponse">
         <property name="message" type="string"/>
         <property name="code" type="string"/>
+    </transfer>
+
+    <transfer name="AuthorizeSessionResponse">
+        <property name="clientToken" type="string"/>
+        <property name="publicKeyBase64" type="string"/>
+        <property name="customerTokens" type="CustomerToken" singular="customerToken"/>
+    </transfer>
+
+    <transfer name="CustomerToken">
+        <property name="clientToken" type="string"/>
     </transfer>
 
     <transfer name="FirstDataApiClientResponse">
@@ -224,6 +239,7 @@
         <property name="hosteddataid" type="string"/>
         <property name="responseHash" type="string"/>
         <property name="cardNumber" type="string"/>
+        <property name="cardToken" type="string"/>
         <property name="expYear" type="string"/>
         <property name="expMonth" type="string"/>
         <property name="ccBrand" type="string"/>
@@ -262,6 +278,7 @@
     <transfer name="RestCheckoutDataResponseAttributes">
         <property name="firstDataPaymentProcessingLink" type="string"/>
         <property name="firstDataCreditCardParameters" type="FirstDataCreditCardParameters"/>
+        <property name="firstDataAuthorizeSessionParameters" type="AuthorizeSessionResponse"/>
         <property name="selectedPaymentMethods" type="RestPaymentMethod[]" singular="selectedPaymentMethod"/>
     </transfer>
 

@@ -46,6 +46,14 @@ interface FirstDataConstants
 
     /**
      * Specification:
+     * - Contains an url for authorize session FirstData API, needed for paymentJs integration.
+     *
+     * @api
+     */
+    public const AUTHORIZE_SESSION_API_URL = 'FIRST_DATA:AUTHORIZE_SESSION_API_URL';
+
+    /**
+     * Specification:
      * - Contains an url for payments FirstData API.
      *
      * @api
@@ -75,6 +83,14 @@ interface FirstDataConstants
      * @api
      */
     public const STORE_NAME = 'FIRST_DATA:STORE_NAME';
+
+    /**
+     * Specification:
+     * - Represents Store ID configuration required for Hosted Page.
+     *
+     * @api
+     */
+    public const STORE_ID = 'FIRST_DATA:STORE_ID';
 
     /**
      * Specification:
