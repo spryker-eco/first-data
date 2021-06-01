@@ -228,6 +228,8 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
      *
      * @api
      *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
     public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
