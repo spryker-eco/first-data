@@ -45,7 +45,7 @@ interface FirstDataClientInterface
 
     /**
      * Specification:
-     * - Makes api call to the First Data in order to receive authorize session data.
+     * - Makes API call to the First Data in order to receive authorize session data.
      * - Makes Zed request.
      *
      * @api
