@@ -29,26 +29,20 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
      */
     public function convertRequestTransferToArray(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): array
     {
+        $paymentTokenTransfer = $firstDataApiRequestTransfer->getPaymentMethodOrFail()->getPaymentTokenOrFail();
+
         return [
            'transactionAmount' => [
-               'total' => $this->calculateCaptureTotal($firstDataApiRequestTransfer),
-               'currency' => $firstDataApiRequestTransfer
-                   ->getOrderOrFail()
-                   ->getCurrencyIsoCode(),
+               'total' => $this->calculateReservationTotal($firstDataApiRequestTransfer),
+               'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
            ],
             'paymentMethod' => [
                 'paymentToken' => [
-                    'function' => $firstDataApiRequestTransfer
-                        ->getPaymentMethodOrFail()
-                        ->getPaymentTokenOrFail()
-                        ->getFunction(),
-                    'value' => $firstDataApiRequestTransfer
-                        ->getPaymentMethodOrFail()
-                        ->getPaymentTokenOrFail()
-                        ->getValueOrFail(),
+                    'function' => $paymentTokenTransfer->getFunction(),
+                    'value' => $paymentTokenTransfer->getValueOrFail(),
                 ],
             ],
-            'storeId' => $firstDataApiRequestTransfer->getStoreNameOrFail(),
+            'storeId' => $firstDataApiRequestTransfer->getStoreId(),
         ];
     }
 
@@ -57,17 +51,11 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
      *
      * @return string
      */
-    protected function calculateCaptureTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
+    protected function calculateReservationTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
     {
-        $total = 0;
-        foreach ($firstDataApiRequestTransfer->getOrderOrFail()->getItems() as $item) {
-            if (in_array($item->getIdSalesOrderItem(), $firstDataApiRequestTransfer->getOrderItemIds())) {
-                $total += (int)$item->getSumPriceToPayAggregation();
-            }
-        }
+        $grandTotal = $firstDataApiRequestTransfer->getTotalsOrFail()->getGrandTotal();
+        $roundedSum = round($grandTotal / 100, 2);
 
-        $total = $total * (1 + (int)$firstDataApiRequestTransfer->getPercentageBuffer() / 100);
-
-        return (string)(round($total / 100, 2));
+        return (string)$roundedSum;
     }
 }

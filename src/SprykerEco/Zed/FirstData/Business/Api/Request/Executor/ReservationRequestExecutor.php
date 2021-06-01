@@ -8,7 +8,6 @@
 namespace SprykerEco\Zed\FirstData\Business\Api\Request\Executor;
 
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
-use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\PaymentMethodTransfer;
 use Generated\Shared\Transfer\PaymentTokenTransfer;
@@ -20,7 +19,7 @@ use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
 
 class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
 {
-    protected const DEFAULT_FUNCTION_METHOD = "DEBIT";
+    protected const DEFAULT_FUNCTION_METHOD = 'DEBIT';
 
     /**
      * @var \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface
@@ -39,6 +38,8 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
 
     /**
      * @param \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface $firstDataApiClient
+     * @param \SprykerEco\Zed\FirstData\FirstDataConfig $firstDataConfig
+     * @param \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface $entityManager
      */
     public function __construct(
         FirstDataApiClientInterface $firstDataApiClient,

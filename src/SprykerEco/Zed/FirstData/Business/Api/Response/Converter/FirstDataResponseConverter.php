@@ -37,6 +37,7 @@ class FirstDataResponseConverter implements FirstDataResponseConverterInterface
         FirstDataGuzzleResponseInterface $guzzleResponse,
         bool $isSuccess
     ): FirstDataApiResponseTransfer {
+        $responseHeaders = $guzzleResponse->getHeaders();
         $responseData = $this->utilEncodingService->decodeJson($guzzleResponse->getResponseBody(), true) ?? [];
 
         $firstDataApiResponseTransfer = (new FirstDataApiResponseTransfer());
@@ -48,6 +49,7 @@ class FirstDataResponseConverter implements FirstDataResponseConverterInterface
 
         $firstDataApiClientResponseTransfer = new FirstDataApiClientResponseTransfer();
         $firstDataApiClientResponseTransfer->fromArray($responseData, true);
+        $firstDataApiClientResponseTransfer->fromArray($responseHeaders, true);
         $firstDataApiResponseTransfer->setClientResponse($firstDataApiClientResponseTransfer);
 
         return $firstDataApiResponseTransfer;

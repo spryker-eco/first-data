@@ -7,7 +7,9 @@
 
 namespace SprykerEco\Zed\FirstData\Communication\Controller;
 
+use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
 
 /**
@@ -24,5 +26,15 @@ class GatewayController extends AbstractGatewayController
     public function processNotificationAction(FirstDataNotificationTransfer $firstDataNotificationTransfer): FirstDataNotificationTransfer
     {
         return $this->getFacade()->processNotification($firstDataNotificationTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponseAction(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
+    {
+        return $this->getFacade()->getAuthorizeSessionResponse($quoteTransfer);
     }
 }
