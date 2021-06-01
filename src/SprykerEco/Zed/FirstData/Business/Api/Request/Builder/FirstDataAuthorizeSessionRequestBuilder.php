@@ -69,9 +69,9 @@ class FirstDataAuthorizeSessionRequestBuilder implements FirstDataRequestBuilder
     protected function getRequestPayload(): string
     {
         $requestPayload = [
-            "apiKey" => $this->firstDataConfig->getFirstDataApiKey(),
-            "apiSecret" => $this->firstDataConfig->getFirstDataApiSecret(),
-            "zeroDollarAuth" => false,
+            'apiKey' => $this->firstDataConfig->getFirstDataApiKey(),
+            'apiSecret' => $this->firstDataConfig->getFirstDataApiSecret(),
+            'zeroDollarAuth' => false,
         ];
 
         return $this->utilEncodingService->encodeJson($requestPayload) ?? '';
