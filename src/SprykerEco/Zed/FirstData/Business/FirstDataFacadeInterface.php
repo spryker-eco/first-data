@@ -35,16 +35,18 @@ interface FirstDataFacadeInterface
     /**
      * Specification:
      * - Makes PaymentTokenPreAuthTransaction request to FirstData API and reserves applicable items.
+     * - Saves `cardToken` to DB and associate it with current customer.
      * - Returns an error if the operation couldn't be executed successfully.
      * - Logs request's details to DB.
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponse
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeReservationOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer;
+    public function executeReservationRequest(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponse): void;
 
     /**
      * Specification:
@@ -91,16 +93,15 @@ interface FirstDataFacadeInterface
     /**
      * Specification:
      * - Makes ReturnTransaction request to FirstData API and refunds refundable items.
-     * - Returns an error if the operation couldn't be executed successfully.
      * - Logs request's details to DB.
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeRefundOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer;
+    public function executeRefundOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void;
 
     /**
      * Specification:
@@ -179,4 +180,17 @@ interface FirstDataFacadeInterface
      * @return \Generated\Shared\Transfer\OrderTransfer
      */
     public function loadPaymentDataByOrder(OrderTransfer $orderTransfer): OrderTransfer;
+
+    /**
+     * Specification:
+     * - Makes api call to the First Data in order to receive authorize session data.
+     * - Returns response from api.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer;
 }

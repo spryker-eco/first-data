@@ -73,10 +73,11 @@ class FirstDataApiClient implements FirstDataApiClientInterface
     {
         $isSuccess = true;
         $firstDataHttpRequestTransfer = $this->firstDataRequestBuilder->buildRequest($firstDataApiRequestTransfer);
+        $requestUrl = $firstDataHttpRequestTransfer->getRequestUrl() ?? $this->getRequestUrl($firstDataApiRequestTransfer);
 
         try {
             $guzzleHttpResponse = $this->guzzleHttpClientAdapter->post(
-                $this->getRequestUrl($firstDataApiRequestTransfer),
+                $requestUrl,
                 $firstDataHttpRequestTransfer->getHeaders(),
                 $firstDataHttpRequestTransfer->getBodyOrFail()
             );
@@ -86,7 +87,6 @@ class FirstDataApiClient implements FirstDataApiClientInterface
         }
 
         $firstDataApiResponseTransfer = $this->firstDataResponseConverter->convertToResponseTransfer($guzzleHttpResponse, $isSuccess);
-        dd(1123);
         $this->firstDataApiLogger
             ->logApiCall(
                 $firstDataHttpRequestTransfer,

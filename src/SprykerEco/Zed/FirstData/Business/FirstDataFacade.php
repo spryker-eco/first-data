@@ -47,15 +47,16 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponse
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeReservationOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer
+    public function executeReservationRequest(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponse): void
     {
-        return $this->getFactory()
-            ->createFirstDataApiClient()
-            ->performApiRequest($firstDataApiRequestTransfer);
+        $this->getFactory()
+            ->createReservationRequestExecutor()
+            ->executeRequest($quoteTransfer, $checkoutResponse);
     }
 
     /**
@@ -111,15 +112,15 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeRefundOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer
+    public function executeRefundOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void
     {
-        return $this->getFactory()
-            ->createFirstDataApiClient()
-            ->performApiRequest($firstDataApiRequestTransfer);
+        $this->getFactory()
+            ->createRefundCommandExecutor()
+            ->executeOmsCommand($firstDataOmsCommandRequestTransfer);
     }
 
     /**
@@ -220,5 +221,19 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
         return $this->getFactory()
             ->createOrderExpander()
             ->loadPaymentDataByOrder($orderTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
+    {
+        return $this->getFactory()
+            ->createAuthorizeSessionProvider()
+            ->getAuthorizeSessionResponse($quoteTransfer);
     }
 }
