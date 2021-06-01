@@ -19,7 +19,7 @@ use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
 
 class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
 {
-    protected const DEFAULT_FUNCTION_METHOD = "DEBIT";
+    protected const DEFAULT_FUNCTION_METHOD = 'DEBIT';
 
     /**
      * @var \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface
