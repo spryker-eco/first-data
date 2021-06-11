@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
+use Generated\Shared\Transfer\CustomerTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataApiLogTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataItemTransfer;
@@ -47,4 +49,24 @@ interface FirstDataEntityManagerInterface
     public function savePaymentFirstDataNotification(
         FirstDataNotificationTransfer $firstDataNotificationTransfer
     ): FirstDataNotificationTransfer;
+
+    /**
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return void
+     */
+    public function tokenizeClientToken(
+        FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+    ): void;
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customer
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return void
+     */
+    public function attachCardTokenToCustomer(
+        CustomerTransfer $customer,
+        FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+    ): void;
 }

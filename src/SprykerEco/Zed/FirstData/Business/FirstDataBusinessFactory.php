@@ -26,6 +26,7 @@ use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\RefundRequestConvert
 use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\ReservationRequestConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Executor\FirstDataRequestExecutorInterface;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Executor\ReservationRequestExecutor;
+use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataAuthorizeSessionResponseConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverterInterface;
 use SprykerEco\Zed\FirstData\Business\Checker\FirstDataNotificationChecker;
@@ -44,6 +45,10 @@ use SprykerEco\Zed\FirstData\Business\Mapper\FirstDataPaymentQuoteMapper;
 use SprykerEco\Zed\FirstData\Business\Mapper\FirstDataPaymentQuoteMapperInterface;
 use SprykerEco\Zed\FirstData\Business\Processor\NotificationProcessor;
 use SprykerEco\Zed\FirstData\Business\Processor\NotificationProcessorInterface;
+use SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessor;
+use SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessorInterface;
+use SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReader;
+use SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReaderInterface;
 use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaver;
 use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaverInterface;
 use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapter;
@@ -139,8 +144,7 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     {
         return new ReservationRequestExecutor(
             $this->createFirstDataApiClient(),
-            $this->getConfig(),
-            $this->getEntityManager()
+            $this->getConfig()
         );
     }
 
@@ -152,7 +156,7 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
         return new FirstDataApiClient(
             $this->createFirstDataGuzzleHttpClientAdapter(),
             $this->createFirstDataAuthorizeSessionRequestBuilder(),
-            $this->createFirstDataResponseConverter(),
+            $this->createFirstDataAuthorizeSessionResponseConverter(),
             $this->createFirstDataApiLogger(),
             $this->getConfig()
         );
@@ -205,6 +209,14 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     public function createFirstDataResponseConverter(): FirstDataResponseConverterInterface
     {
         return new FirstDataResponseConverter($this->getUtilEncodingService());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverterInterface
+     */
+    public function createFirstDataAuthorizeSessionResponseConverter(): FirstDataResponseConverterInterface
+    {
+        return new FirstDataAuthorizeSessionResponseConverter($this->getUtilEncodingService());
     }
 
     /**
@@ -328,6 +340,26 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
      */
     public function createAuthorizeSessionProvider(): AuthorizeSessionProviderInterface
     {
-        return new AuthorizeSessionProvider($this->createFirstDataAuthorizeSessionApiClient());
+        return new AuthorizeSessionProvider(
+            $this->createFirstDataAuthorizeSessionApiClient(),
+            $this->getRepository(),
+            $this->getEntityManager()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReaderInterface
+     */
+    public function createFirstDataCustomerTokenReader(): FirstDataCustomerTokenReaderInterface
+    {
+        return new FirstDataCustomerTokenReader($this->getRepository());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessorInterface
+     */
+    public function createTokenizationProcessor(): TokenizationProcessorInterface
+    {
+        return new TokenizationProcessor($this->getEntityManager());
     }
 }

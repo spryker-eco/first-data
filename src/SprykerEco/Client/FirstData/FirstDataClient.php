@@ -7,10 +7,12 @@
 
 namespace SprykerEco\Client\FirstData;
 
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
-use Generated\Shared\Transfer\QuoteTransfer;
 use Spryker\Client\Kernel\AbstractClient;
 
 /**
@@ -57,12 +59,46 @@ class FirstDataClient extends AbstractClient implements FirstDataClientInterface
      *
      * @api
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer
      */
-    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
+    public function processTokenization(FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer): FirstDataCustomerTokenTransfer
     {
         return $this->getFactory()
             ->createZedStub()
-            ->getAuthorizeSessionResponse($quoteTransfer);
+            ->processTokenization($firstDataCustomerTokenTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer
+    {
+        return $this->getFactory()
+            ->createZedStub()
+            ->getAuthorizeSessionResponse($customerTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function getCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer
+    {
+        return $this->getFactory()
+            ->createZedStub()
+            ->getCustomerTokensCollection($customerTransfer);
     }
 }

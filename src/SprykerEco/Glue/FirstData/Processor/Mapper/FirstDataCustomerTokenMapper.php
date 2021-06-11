@@ -11,7 +11,7 @@ use Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer;
 use Generated\Shared\Transfer\RestCheckoutDataTransfer;
 use SprykerEco\Client\FirstData\FirstDataClientInterface;
 
-class FirstDataAuthorizeSessionParametersMapper implements FirstDataAuthorizeSessionParametersMapperInterface
+class FirstDataCustomerTokenMapper implements FirstDataCustomerTokenMapperInterface
 {
     /**
      * @var \SprykerEco\Client\FirstData\FirstDataClientInterface
@@ -32,18 +32,14 @@ class FirstDataAuthorizeSessionParametersMapper implements FirstDataAuthorizeSes
      *
      * @return \Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer
      */
-    public function mapFirstDataAuthorizeSessionParametersTransferToRestCheckoutDataResponseAttributesTransfer(
+    public function mapFirstDataCustomerTokensCollectionTransferToRestCheckoutDataResponseAttributesTransfer(
         RestCheckoutDataResponseAttributesTransfer $restCheckoutDataResponseAttributesTransfer,
         RestCheckoutDataTransfer $restCheckoutDataTransfer
     ): RestCheckoutDataResponseAttributesTransfer {
-        $firstDataApiResponseTransfer = $this->firstDataClient->getAuthorizeSessionResponse(
-            $restCheckoutDataTransfer->getQuoteOrFail()
+        $customerTokensCollection = $this->firstDataClient->getCustomerTokensCollection(
+            $restCheckoutDataTransfer->getQuoteOrFail()->getCustomerOrFail()
         );
 
-        $restCheckoutDataResponseAttributesTransfer->setFirstDataAuthorizeSessionParameters(
-            $firstDataApiResponseTransfer->getAuthorizeSessionresponseOrFail()
-        );
-
-        return $restCheckoutDataResponseAttributesTransfer;
+        return $restCheckoutDataResponseAttributesTransfer->setCustomerTokensCollection($customerTokensCollection);
     }
 }

@@ -29,7 +29,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
      */
     public function convertRequestTransferToArray(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): array
     {
-        $paymentTokenTransfer = $firstDataApiRequestTransfer->getPaymentMethodOrFail()->getPaymentTokenOrFail();
+        $customerToken = $firstDataApiRequestTransfer->getPaymentMethodOrFail()->getCustomerTokenOrFail();
 
         return [
            'transactionAmount' => [
@@ -38,8 +38,12 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
            ],
             'paymentMethod' => [
                 'paymentToken' => [
-                    'function' => $paymentTokenTransfer->getFunction(),
-                    'value' => $paymentTokenTransfer->getValueOrFail(),
+                    'function' => $customerToken->getFunctionOrFail(),
+                    'value' => $customerToken->getCardTokenOrFail(),
+                    'expiryDate' => [
+                        'month' => $customerToken->getExpMonthOrFail(),
+                        'year' => $customerToken->getExpYear(),
+                    ],
                 ],
             ],
             'storeId' => $firstDataApiRequestTransfer->getStoreId(),

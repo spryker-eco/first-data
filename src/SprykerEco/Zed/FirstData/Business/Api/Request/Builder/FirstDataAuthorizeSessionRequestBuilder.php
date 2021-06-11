@@ -71,6 +71,7 @@ class FirstDataAuthorizeSessionRequestBuilder implements FirstDataRequestBuilder
         $requestPayload = [
             'apiKey' => $this->firstDataConfig->getFirstDataApiKey(),
             'apiSecret' => $this->firstDataConfig->getFirstDataApiSecret(),
+            'storeId' => $this->firstDataConfig->getStoreId(),
             'zeroDollarAuth' => false,
         ];
 
@@ -85,11 +86,10 @@ class FirstDataAuthorizeSessionRequestBuilder implements FirstDataRequestBuilder
     protected function buildRequestHeaders(string $requestPayload): array
     {
         $timestamp = time() * 1000;
-        $nonce = time() * 1000 + rand();
+        $nonce = Uuid::uuid4()->toString();
         $apiKey = $this->firstDataConfig->getFirstDataApiKey();
 
         return [
-            'Client-Request-Id' => Uuid::uuid4()->toString(),
             'Api-Key' => $apiKey,
             'Content-Type' => static::DEFAULT_AUTHORIZATION_REQUEST_CONTENT_TYPE,
             'Timestamp' => $timestamp,
