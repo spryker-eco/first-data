@@ -7,6 +7,9 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
+use Generated\Shared\Transfer\CustomerTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataItemTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataTransfer;
@@ -127,5 +130,31 @@ class FirstDataRepository extends AbstractRepository implements FirstDataReposit
 
         return (new PaymentFirstDataTransfer())
             ->fromArray($paymentFirstDataEntity->toArray(), true);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function findPaymentFirstDataCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer
+    {
+        $customerTokenCollectionTransfer = new FirstDataCustomerTokensCollectionTransfer();
+
+        $paymentFirstDataCardTokenEntities = $this->getFactory()
+            ->createPaymentFirstDataCardTokenQuery()
+            ->useSpyCusomerToFirstDataCardTokenQuery()
+                ->filterByCustomerReference($customerTransfer->getCustomerReference())
+            ->endUse()
+            ->find();
+
+        foreach ($paymentFirstDataCardTokenEntities as $paymentFirstDataCardTokenEntity) {
+            $customerTokenCollectionTransfer->addCustomerToken(
+                (new FirstDataCustomerTokenTransfer())
+                    ->fromArray($paymentFirstDataCardTokenEntity->toArray(), true)
+            );
+        }
+
+        return $customerTokenCollectionTransfer;
     }
 }

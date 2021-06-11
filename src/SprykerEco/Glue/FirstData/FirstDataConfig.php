@@ -20,6 +20,8 @@ class FirstDataConfig extends AbstractBundleConfig
     public const RESPONSE_DETAILS_FIRST_DATA_PAYMENT_OID_MISSING = 'firstDataTransactionData.oid field is missing.';
 
     public const RESOURCE_FIRST_DATA_NOTIFICATIONS = 'first-data-notifications';
+    public const RESOURCE_FIRST_DATA_TOKENIZATION = 'first-data-tokenization';
+    public const RESOURCE_FIRST_DATA_AUTHORIZE_SESSION = 'first-data-authorize-session';
 
     protected const IS_3D_SECURE = false;
     protected const MOBILE_MODE = false;

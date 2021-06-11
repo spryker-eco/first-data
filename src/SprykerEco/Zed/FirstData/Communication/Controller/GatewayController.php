@@ -7,9 +7,11 @@
 
 namespace SprykerEco\Zed\FirstData\Communication\Controller;
 
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
-use Generated\Shared\Transfer\QuoteTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
 
 /**
@@ -29,12 +31,32 @@ class GatewayController extends AbstractGatewayController
     }
 
     /**
-     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponseAction(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
+    public function getAuthorizeSessionResponseAction(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer
     {
-        return $this->getFacade()->getAuthorizeSessionResponse($quoteTransfer);
+        return $this->getFacade()->getAuthorizeSessionResponse($customerTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function getCustomerTokensCollectionAction(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer
+    {
+        return $this->getFacade()->getFirstDataCustomerTokensCollection($customerTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer
+     */
+    public function processTokenizationAction(FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer): FirstDataCustomerTokenTransfer
+    {
+        return $this->getFacade()->processTokenization($firstDataCustomerTokenTransfer);
     }
 }

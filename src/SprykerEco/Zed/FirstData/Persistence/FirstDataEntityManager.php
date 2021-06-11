@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
+use Generated\Shared\Transfer\CustomerTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataApiLogTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataItemTransfer;
@@ -39,6 +41,54 @@ class FirstDataEntityManager extends AbstractEntityManager implements FirstDataE
 
         return (new PaymentFirstDataTransfer())
             ->fromArray($paymentFirstDataEntity->toArray(), true);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return void
+     */
+    public function tokenizeClientToken(
+        FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+    ): void {
+        $firstDataCustomerTokenTransfer->requireClientToken();
+
+        $paymentFirstDataCardTokenEntity = $this->getFactory()
+            ->createPaymentFirstDataCardTokenQuery()
+            ->filterByClientToken($firstDataCustomerTokenTransfer->getClientToken())
+            ->findOneOrCreate();
+
+        $paymentFirstDataCardTokenEntity->fromArray($firstDataCustomerTokenTransfer->toArray());
+
+        $paymentFirstDataCardTokenEntity->save();
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customer
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return void
+     */
+    public function attachCardTokenToCustomer(
+        CustomerTransfer $customer,
+        FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+    ): void {
+        $paymentFirstDataCardTokenEntity = $this->getFactory()
+            ->createPaymentFirstDataCardTokenQuery()
+            ->filterByClientToken($firstDataCustomerTokenTransfer->getClientToken())
+            ->findOneOrCreate();
+
+        $paymentFirstDataCardTokenEntity->fromArray($firstDataCustomerTokenTransfer->toArray());
+
+        $paymentFirstDataCardTokenEntity->save();
+
+        $customerToFirstDataCardTokenEntity = $this->getFactory()
+            ->createCustomerToFirstDataCardTokenQuery()
+            ->filterByCustomerReference($customer->getCustomerReference())
+            ->filterByFkPaymentFirstDataCardToken($paymentFirstDataCardTokenEntity->getIdPaymentFirstDataCardToken())
+            ->findOneOrCreate();
+
+        $customerToFirstDataCardTokenEntity->save();
     }
 
     /**

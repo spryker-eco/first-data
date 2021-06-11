@@ -5,17 +5,17 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace SprykerEco\Zed\FirstData\Business\Api\Provider;
+namespace SprykerEco\Glue\FirstData\Processor\Provider;
 
 use Generated\Shared\Transfer\CustomerTransfer;
-use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 
 interface AuthorizeSessionProviderInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
      */
-    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer;
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): RestResponseInterface;
 }

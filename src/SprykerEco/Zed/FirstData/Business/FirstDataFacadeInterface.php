@@ -8,8 +8,11 @@
 namespace SprykerEco\Zed\FirstData\Business;
 
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer;
 use Generated\Shared\Transfer\OrderTransfer;
@@ -183,14 +186,42 @@ interface FirstDataFacadeInterface
 
     /**
      * Specification:
-     * - Makes api call to the First Data in order to receive authorize session data.
+     * - Makes API call to the First Data in order to receive authorize session data `ClientToken` and `PublicKeyBase64`.
+     * - Associate `ClientToken` with current customer save association to database.
      * - Returns response from api.
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer;
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer;
+
+    /**
+     * Specification:
+     * - Reads all available card tokens from DB for given customer.
+     * - Returns customer tokens collection.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function getFirstDataCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer;
+
+    /**
+     * Specification:
+     * - Retrieves token by `ClientToken` from database.
+     * - Saves first data payment token data to database.
+     * - Returns customer token back.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer
+     */
+    public function processTokenization(FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer): FirstDataCustomerTokenTransfer;
 }

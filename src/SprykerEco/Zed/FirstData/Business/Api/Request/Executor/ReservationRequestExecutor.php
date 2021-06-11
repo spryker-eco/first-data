@@ -9,13 +9,13 @@ namespace SprykerEco\Zed\FirstData\Business\Api\Request\Executor;
 
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
+use Generated\Shared\Transfer\FirstDataTransactionDataTransfer;
 use Generated\Shared\Transfer\PaymentMethodTransfer;
-use Generated\Shared\Transfer\PaymentTokenTransfer;
 use Generated\Shared\Transfer\QuoteTransfer;
 use SprykerEco\Shared\FirstData\FirstDataConfig as SharedFirstDataConfig;
 use SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface;
 use SprykerEco\Zed\FirstData\FirstDataConfig;
-use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
 
 class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
 {
@@ -32,23 +32,15 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
     protected $firstDataConfig;
 
     /**
-     * @var \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
      * @param \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface $firstDataApiClient
      * @param \SprykerEco\Zed\FirstData\FirstDataConfig $firstDataConfig
-     * @param \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface $entityManager
      */
     public function __construct(
         FirstDataApiClientInterface $firstDataApiClient,
-        FirstDataConfig $firstDataConfig,
-        FirstDataEntityManagerInterface $entityManager
+        FirstDataConfig $firstDataConfig
     ) {
         $this->firstDataApiClient = $firstDataApiClient;
         $this->firstDataConfig = $firstDataConfig;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -66,25 +58,42 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
         }
 
         $firstDataTransactionData = $paymentTransfer->getFirstDataCreditCardOrFail()->getFirstDataTransactionDataOrFail();
-        $cardToken = $firstDataTransactionData->getCardToken();
 
-        $paymentTokenTransfer = (new PaymentTokenTransfer())
-            ->setFunction(static::DEFAULT_FUNCTION_METHOD)
-            ->setValue($cardToken);
-
-        $firstDataApiRequestTransfer = (new FirstDataApiRequestTransfer())
-            ->setTotals($quoteTransfer->getTotalsOrFail())
-            ->setCurrencyIsoCode($quoteTransfer->getCurrencyOrFail()->getCodeOrFail())
-            ->setRequestType(FirstDataConfig::FIRST_DATA_RESERVATION_REQUEST_TYPE)
-            ->setPaymentMethod(
-                (new PaymentMethodTransfer())->setPaymentToken($paymentTokenTransfer)
-            )->setPercentageBuffer($this->firstDataConfig->getAdditionAuthPercentageBuffer())
-            ->setStoreId($this->firstDataConfig->getStoreId());
-
-        $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest($firstDataApiRequestTransfer);
+        $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest(
+            $this->getFirstDataApiRequestTransfer($quoteTransfer, $firstDataTransactionData)
+        );
 
         if (!$firstDataApiResponseTransfer->getIsSuccess()) {
             $checkoutResponse->setIsSuccess(false);
         }
+
+        $checkoutResponse->setIsSuccess(true);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\FirstDataTransactionDataTransfer $firstDataTransactionData
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiRequestTransfer
+     */
+    protected function getFirstDataApiRequestTransfer(
+        QuoteTransfer $quoteTransfer,
+        FirstDataTransactionDataTransfer $firstDataTransactionData
+    ): FirstDataApiRequestTransfer {
+        $paymentTokenTransfer = (new FirstDataCustomerTokenTransfer())
+            ->setFunction(static::DEFAULT_FUNCTION_METHOD)
+            ->setCardToken($firstDataTransactionData->getCardTokenOrFail())
+            ->setExpMonth($firstDataTransactionData->getExpMonth())
+            ->setExpYear($firstDataTransactionData->getExpYear());
+
+        return (new FirstDataApiRequestTransfer())
+            ->setTotals($quoteTransfer->getTotalsOrFail())
+            ->setCurrencyIsoCode($quoteTransfer->getCurrencyOrFail()->getCodeOrFail())
+            ->setRequestType(FirstDataConfig::FIRST_DATA_RESERVATION_REQUEST_TYPE)
+            ->setPaymentMethod(
+                (new PaymentMethodTransfer())
+                    ->setCustomerToken($paymentTokenTransfer)
+            )->setPercentageBuffer($this->firstDataConfig->getAdditionAuthPercentageBuffer())
+            ->setStoreId($this->firstDataConfig->getStoreId());
     }
 }

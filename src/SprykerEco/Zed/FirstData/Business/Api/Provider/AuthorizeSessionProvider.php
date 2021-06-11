@@ -7,13 +7,19 @@
 
 namespace SprykerEco\Zed\FirstData\Business\Api\Provider;
 
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
-use Generated\Shared\Transfer\QuoteTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
+use Spryker\Zed\Kernel\Persistence\EntityManager\TransactionTrait;
 use SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataRepositoryInterface;
 
 class AuthorizeSessionProvider implements AuthorizeSessionProviderInterface
 {
+    use TransactionTrait;
+
     protected const AUTHORIZE_SESSION_REQUEST_TYPE_NAME = 'AuthorizeSession';
 
     /**
@@ -22,22 +28,47 @@ class AuthorizeSessionProvider implements AuthorizeSessionProviderInterface
     protected $firstDataApiClient;
 
     /**
-     * @param \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface $firstDataApiClient
+     * @var \SprykerEco\Zed\FirstData\Persistence\FirstDataRepositoryInterface
      */
-    public function __construct(FirstDataApiClientInterface $firstDataApiClient)
-    {
+    protected $firstDataRepository;
+
+    /**
+     * @var \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * @param \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface $firstDataApiClient
+     * @param \SprykerEco\Zed\FirstData\Persistence\FirstDataRepositoryInterface $firstDataRepository
+     * @param \SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManagerInterface $entityManager
+     */
+    public function __construct(
+        FirstDataApiClientInterface $firstDataApiClient,
+        FirstDataRepositoryInterface $firstDataRepository,
+        FirstDataEntityManagerInterface $entityManager
+    ) {
         $this->firstDataApiClient = $firstDataApiClient;
+        $this->firstDataRepository = $firstDataRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
      *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(QuoteTransfer $quoteTransfer): FirstDataApiResponseTransfer
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer
     {
-        return $this->firstDataApiClient->performApiRequest(
+        $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest(
             (new FirstDataApiRequestTransfer())->setRequestType(static::AUTHORIZE_SESSION_REQUEST_TYPE_NAME)
         );
+
+        $firstDataCustomerTokenTransfer = (new FirstDataCustomerTokenTransfer())->setClientToken(
+            $firstDataApiResponseTransfer->getAuthorizeSessionResponseOrFail()->getClientToken()
+        );
+
+        $this->entityManager->attachCardTokenToCustomer($customerTransfer, $firstDataCustomerTokenTransfer);
+
+        return $firstDataApiResponseTransfer;
     }
 }

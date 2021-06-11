@@ -10,7 +10,7 @@ namespace SprykerEco\Glue\FirstData\Processor\Mapper;
 use Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer;
 use Generated\Shared\Transfer\RestCheckoutDataTransfer;
 
-interface FirstDataAuthorizeSessionParametersMapperInterface
+interface FirstDataCustomerTokenMapperInterface
 {
     /**
      * @param \Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer $restCheckoutDataResponseAttributesTransfer
@@ -18,7 +18,7 @@ interface FirstDataAuthorizeSessionParametersMapperInterface
      *
      * @return \Generated\Shared\Transfer\RestCheckoutDataResponseAttributesTransfer
      */
-    public function mapFirstDataAuthorizeSessionParametersTransferToRestCheckoutDataResponseAttributesTransfer(
+    public function mapFirstDataCustomerTokensCollectionTransferToRestCheckoutDataResponseAttributesTransfer(
         RestCheckoutDataResponseAttributesTransfer $restCheckoutDataResponseAttributesTransfer,
         RestCheckoutDataTransfer $restCheckoutDataTransfer
     ): RestCheckoutDataResponseAttributesTransfer;
