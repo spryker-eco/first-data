@@ -15,11 +15,11 @@ use Spryker\Glue\Kernel\AbstractPlugin;
 /**
  * @method \SprykerEco\Glue\FirstData\FirstDataFactory getFactory()
  */
-class FirstDataCheckoutRequestValidatorPlugin extends AbstractPlugin implements CheckoutRequestValidatorPluginInterface
+class FirstDataTokenizedPaymentCheckoutRequestValidatorPlugin extends AbstractPlugin implements CheckoutRequestValidatorPluginInterface
 {
     /**
      * {@inheritDoc}
-     * - Checks that "FirstData" payment data has all required fields when payment type is "Hosted Page".
+     * - Checks that "FirstData" payment data has all required fields when payment data is tokenized.
      *
      * @api
      *
@@ -30,7 +30,7 @@ class FirstDataCheckoutRequestValidatorPlugin extends AbstractPlugin implements 
     public function validateAttributes(RestCheckoutRequestAttributesTransfer $restCheckoutRequestAttributesTransfer): RestErrorCollectionTransfer
     {
         return $this->getFactory()
-            ->createFirstDataPaymentValidator()
+            ->createFirstDataTokenizedPaymentValidator()
             ->validate($restCheckoutRequestAttributesTransfer);
     }
 }

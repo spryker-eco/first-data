@@ -32,9 +32,11 @@ class CaptureRequestConverter implements FirstDataRequestConverterInterface
         return [
            'transactionAmount' => [
                'total' => $this->calculateCaptureTotal($firstDataApiRequestTransfer),
-               'currency' => $firstDataApiRequestTransfer
-                   ->getOrderOrFail()
-                   ->getCurrencyIsoCode(),
+               // TODO swap back
+               'currency' => 'USD',
+//               'currency' => $firstDataApiRequestTransfer
+//                   ->getOrderOrFail()
+//                   ->getCurrencyIsoCode(),
            ],
         ];
     }

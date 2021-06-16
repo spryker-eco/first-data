@@ -18,6 +18,8 @@ class FirstDataConfig extends AbstractBundleConfig
 
     public const RESPONSE_DETAILS_FIRST_DATA_PAYMENT_TRANSACTION_ID_MISSING = 'firstDataTransactionData.transaction_id field is missing.';
     public const RESPONSE_DETAILS_FIRST_DATA_PAYMENT_OID_MISSING = 'firstDataTransactionData.oid field is missing.';
+    public const RESPONSE_DETAILS_FIRST_DATA_PAYMENT_CARD_TOKEN_MISSING = 'firstDataTransactionData.cardToken field is missing.';
+    public const RESPONSE_DETAILS_FIRST_DATA_PAYMENT_EXP_MONT_OR_YEAR_MISSING = 'firstDataTransactionData.expYear or firstDataTransactionData.expMonth field is missing.';
 
     public const RESOURCE_FIRST_DATA_NOTIFICATIONS = 'first-data-notifications';
     public const RESOURCE_FIRST_DATA_TOKENIZATION = 'first-data-tokenization';

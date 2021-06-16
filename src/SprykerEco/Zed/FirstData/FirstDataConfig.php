@@ -57,6 +57,16 @@ class FirstDataConfig extends AbstractBundleConfig
      *
      * @return string
      */
+    public function getFirstDataGatewayProviderName(): string
+    {
+        return $this->get(FirstDataConstants::GATEWAY_PROVIDER_NAME);
+    }
+
+    /**
+     * @api
+     *
+     * @return string
+     */
     public function geAuthorizeSessionApiEndpoint(): string
     {
         return $this->get(FirstDataConstants::AUTHORIZE_SESSION_API_URL);

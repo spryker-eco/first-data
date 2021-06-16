@@ -30,15 +30,18 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
     public function convertRequestTransferToArray(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): array
     {
         $customerToken = $firstDataApiRequestTransfer->getPaymentMethodOrFail()->getCustomerTokenOrFail();
+        $billingAddress = $firstDataApiRequestTransfer->getBillingAddressOrFail();
+        $shippingAddress = $firstDataApiRequestTransfer->getShippingAddressOrFail();
 
         return [
-           'transactionAmount' => [
-               'total' => $this->calculateReservationTotal($firstDataApiRequestTransfer),
-               'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
-           ],
+            'transactionAmount' => [
+                'total' => $this->calculateReservationTotal($firstDataApiRequestTransfer),
+                // TODO swap back
+//               'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
+                'currency' => 'USD',
+            ],
             'paymentMethod' => [
                 'paymentToken' => [
-                    'function' => $customerToken->getFunctionOrFail(),
                     'value' => $customerToken->getCardTokenOrFail(),
                     'expiryDate' => [
                         'month' => $customerToken->getExpMonthOrFail(),
@@ -47,6 +50,37 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                 ],
             ],
             'storeId' => $firstDataApiRequestTransfer->getStoreId(),
+            'order' => [
+                'orderId' => $firstDataApiRequestTransfer->getOrderOrFail()->getOrderReferenceOrFail(),
+                'billing' => [
+                    'name' => $billingAddress->getFirstName() ?? '',
+                    'customerId' => $billingAddress->getCustomerId() ?? '',
+                    'contact' => [
+                       'email' => $billingAddress->getEmail() ?? '',
+                    ],
+                    'address' => [
+                        'company' => $billingAddress->getCompany() ?? '',
+                        'address1' => $billingAddress->getAddress1() ?? '',
+                        'city' => $billingAddress->getCity() ?? '',
+                        'region' => $billingAddress->getRegion() ?? '',
+                        'postalCode' => $billingAddress->getZipCode() ?? '',
+                        'country' => $billingAddress->getCountry() ?? '',
+                    ],
+                ],
+                'shipping' => [
+                    'name' => $shippingAddress->getFirstName() ?? '',
+                    'contact' => [
+                        'email' => $shippingAddress->getEmail() ?? '',
+                    ],
+                    'address' => [
+                        'address1' => $shippingAddress->getAddress1() ?? '',
+                        'city' => $shippingAddress->getCity() ?? '',
+                        'region' => $shippingAddress->getRegion() ?? '',
+                        'postalCode' => $shippingAddress->getZipCode() ?? '',
+                        'country' => $shippingAddress->getCountry() ?? '',
+                    ],
+                ],
+            ],
         ];
     }
 
