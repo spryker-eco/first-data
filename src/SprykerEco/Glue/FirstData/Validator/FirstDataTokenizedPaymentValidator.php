@@ -77,8 +77,11 @@ class FirstDataTokenizedPaymentValidator implements FirstDataPaymentValidatorInt
     ): RestErrorCollectionTransfer {
         $firstDataTransactionDataTransfer = $restCheckoutRequestAttributesTransfer->getFirstDataTransactionData();
 
-        if (!$firstDataTransactionDataTransfer || !$firstDataTransactionDataTransfer->getExpYear()
-            || !$firstDataTransactionDataTransfer->getExpMonth()) {
+        if (
+            !$firstDataTransactionDataTransfer
+            || !$firstDataTransactionDataTransfer->getExpYear()
+            || !$firstDataTransactionDataTransfer->getExpMonth()
+        ) {
             $restErrorMessageTransfer = (new RestErrorMessageTransfer())
                 ->setStatus(Response::HTTP_BAD_REQUEST)
                 ->setCode(FirstDataConfig::RESPONSE_CODE_INVALID_FIRST_DATA_PAYMENT_TRANSACTION_ID)
