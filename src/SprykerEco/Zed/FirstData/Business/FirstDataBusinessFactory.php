@@ -144,7 +144,8 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     {
         return new ReservationRequestExecutor(
             $this->createFirstDataApiClient(),
-            $this->getConfig()
+            $this->getConfig(),
+            $this->createFirstDataOrderPaymentSaver()
         );
     }
 

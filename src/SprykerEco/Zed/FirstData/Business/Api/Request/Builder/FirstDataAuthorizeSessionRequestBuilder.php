@@ -69,6 +69,7 @@ class FirstDataAuthorizeSessionRequestBuilder implements FirstDataRequestBuilder
     protected function getRequestPayload(): string
     {
         $requestPayload = [
+            'gateway' => $this->firstDataConfig->getFirstDataGatewayProviderName(),
             'apiKey' => $this->firstDataConfig->getFirstDataApiKey(),
             'apiSecret' => $this->firstDataConfig->getFirstDataApiSecret(),
             'storeId' => $this->firstDataConfig->getStoreId(),

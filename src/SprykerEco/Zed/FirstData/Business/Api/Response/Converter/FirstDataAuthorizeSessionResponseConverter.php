@@ -8,13 +8,14 @@
 namespace SprykerEco\Zed\FirstData\Business\Api\Response\Converter;
 
 use Generated\Shared\Transfer\AuthorizeSessionResponseTransfer;
-use Generated\Shared\Transfer\FirstDataApiClientResponseTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponseInterface;
 use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface;
 
 class FirstDataAuthorizeSessionResponseConverter implements FirstDataResponseConverterInterface
 {
+    protected const CLIENT_TOKEN_HEADER_KEY = 'Client-Token';
+
     /**
      * @var \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface
      */
@@ -38,7 +39,6 @@ class FirstDataAuthorizeSessionResponseConverter implements FirstDataResponseCon
         FirstDataGuzzleResponseInterface $guzzleResponse,
         bool $isSuccess
     ): FirstDataApiResponseTransfer {
-        $responseHeaders = $guzzleResponse->getHeaders();
         $responseData = $this->utilEncodingService->decodeJson($guzzleResponse->getResponseBody(), true) ?? [];
 
         $firstDataApiResponseTransfer = (new FirstDataApiResponseTransfer());
@@ -48,14 +48,12 @@ class FirstDataAuthorizeSessionResponseConverter implements FirstDataResponseCon
             return $firstDataApiResponseTransfer->fromArray($responseData, true);
         }
 
-        $firstDataApiClientResponseTransfer = new FirstDataApiClientResponseTransfer();
-        $firstDataApiClientResponseTransfer->fromArray($responseData, true);
-        $firstDataApiClientResponseTransfer->fromArray($responseHeaders, true);
-        $firstDataApiResponseTransfer->setClientResponse($firstDataApiClientResponseTransfer);
-
         $authorizeSessionResponseTransfer = new AuthorizeSessionResponseTransfer();
-        $authorizeSessionResponseTransfer->fromArray($responseData, true);
-        $authorizeSessionResponseTransfer->fromArray($responseHeaders, true);
+        $authorizeSessionResponseTransfer
+            ->fromArray($responseData, true)
+            ->setClientToken(
+                $guzzleResponse->getHeader(static::CLIENT_TOKEN_HEADER_KEY)
+            );
 
         $firstDataApiResponseTransfer->setAuthorizeSessionResponse($authorizeSessionResponseTransfer);
 

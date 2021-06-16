@@ -24,6 +24,7 @@ use SprykerEco\Glue\FirstData\Processor\Saver\FirstDataTokenizationSaver;
 use SprykerEco\Glue\FirstData\Processor\Saver\FirstDataTokenizationSaverInterface;
 use SprykerEco\Glue\FirstData\Validator\FirstDataPaymentValidator;
 use SprykerEco\Glue\FirstData\Validator\FirstDataPaymentValidatorInterface;
+use SprykerEco\Glue\FirstData\Validator\FirstDataTokenizedPaymentValidator;
 
 /**
  * @method \SprykerEco\Glue\FirstData\FirstDataConfig getConfig()
@@ -66,6 +67,14 @@ class FirstDataFactory extends AbstractFactory
     public function createFirstDataPaymentValidator(): FirstDataPaymentValidatorInterface
     {
         return new FirstDataPaymentValidator();
+    }
+
+    /**
+     * @return \SprykerEco\Glue\FirstData\Validator\FirstDataPaymentValidatorInterface
+     */
+    public function createFirstDataTokenizedPaymentValidator(): FirstDataPaymentValidatorInterface
+    {
+        return new FirstDataTokenizedPaymentValidator();
     }
 
     /**

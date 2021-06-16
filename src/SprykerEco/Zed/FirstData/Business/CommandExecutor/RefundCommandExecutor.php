@@ -76,6 +76,7 @@ class RefundCommandExecutor implements FirstDataCommandExecutorInterface
             ->setRequestType(FirstDataConfig::FIRST_DATA_RETURN_REQUEST_TYPE)
             ->setOrder($firstDataOmsCommandRequestTransfer->getOrder())
             ->setTransactionId($paymentFirstDataTransfer->getOid())
+            ->setStoreId($this->firstDataConfig->getStoreId())
             ->setRefund($this->getItemsForRefund($firstDataOmsCommandRequestTransfer));
 
         $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest($firstDataApiRequestTransfer);
