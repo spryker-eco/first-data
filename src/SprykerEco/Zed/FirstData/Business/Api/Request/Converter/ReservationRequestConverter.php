@@ -36,9 +36,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
         return [
             'transactionAmount' => [
                 'total' => $this->calculateReservationTotal($firstDataApiRequestTransfer),
-                // TODO swap back
-//               'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
-                'currency' => 'USD',
+                'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
             ],
             'paymentMethod' => [
                 'paymentToken' => [
