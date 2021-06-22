@@ -5,13 +5,14 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData;
+namespace SprykerEcoTest\Zed\FirstData;
 
 use Codeception\Actor;
 use DateTime;
 use Generated\Shared\DataBuilder\QuoteBuilder;
 use Generated\Shared\DataBuilder\RestCheckoutRequestAttributesBuilder;
 use Generated\Shared\DataBuilder\RestPaymentBuilder;
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataTransactionDataTransfer;
 use Generated\Shared\Transfer\FirstDataTransfer;
 use Generated\Shared\Transfer\PaymentTransfer;
@@ -19,7 +20,10 @@ use Generated\Shared\Transfer\QuoteTransfer;
 use Generated\Shared\Transfer\RestCheckoutRequestAttributesTransfer;
 use Generated\Shared\Transfer\SaveOrderTransfer;
 use Generated\Shared\Transfer\StoreTransfer;
+use Orm\Zed\FirstData\Persistence\SpyCusomerToFirstDataCardToken;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstData;
+use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardToken;
+use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardTokenQuery;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataItem;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataItemQuery;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataNotification;
@@ -28,11 +32,11 @@ use Orm\Zed\Sales\Persistence\SpySalesOrder;
 use Orm\Zed\Sales\Persistence\SpySalesOrderAddress;
 use Orm\Zed\Sales\Persistence\SpySalesOrderItem;
 use Orm\Zed\Sales\Persistence\SpySalesOrderItemQuery;
-use Pyz\Zed\FirstData\Business\FirstDataBusinessFactory;
-use Pyz\Zed\FirstData\Business\FirstDataFacade;
-use Pyz\Zed\FirstData\Business\FirstDataFacadeInterface;
-use Pyz\Zed\FirstData\Communication\Plugin\Checkout\FirstDataCheckoutDoSaveOrderPlugin;
-use Pyz\Zed\FirstData\FirstDataConfig;
+use SprykerEco\Zed\FirstData\Business\FirstDataBusinessFactory;
+use SprykerEco\Zed\FirstData\Business\FirstDataFacade;
+use SprykerEco\Zed\FirstData\Business\FirstDataFacadeInterface;
+use SprykerEco\Zed\FirstData\Communication\Plugin\Checkout\FirstDataCheckoutDoSaveOrderPlugin;
+use SprykerEco\Zed\FirstData\FirstDataConfig;
 
 /**
  * @method void wantToTest($text)
@@ -54,6 +58,7 @@ class FirstDataBusinessTester extends Actor
 
     public const ID_TRANSACTION = '84556522425';
     public const OID = '2bfaf81a-3435';
+    protected const TEST_CLIENT_TOKEN = 'clientToken';
 
     /**
      * @var array
@@ -105,7 +110,7 @@ class FirstDataBusinessTester extends Actor
     ];
 
     /**
-     * @return \Pyz\Zed\FirstData\FirstDataConfig
+     * @return \SprykerEco\Zed\FirstData\FirstDataConfig
      */
     public function createConfig(): FirstDataConfig
     {
@@ -187,6 +192,7 @@ class FirstDataBusinessTester extends Actor
         $salesOrderItemEntity->setPriceToPayAggregation(27710);
         $salesOrderItemEntity->setName('name-of-order-item');
         $salesOrderItemEntity->setSku('sku-123-321');
+        $salesOrderItemEntity->setRefundableAmount(27710);
         $salesOrderItemEntity->save();
 
         return $salesOrderItemEntity;
@@ -247,9 +253,21 @@ class FirstDataBusinessTester extends Actor
     }
 
     /**
-     * @param \Pyz\Zed\FirstData\Business\FirstDataBusinessFactory $firstDataBusinessFactoryMock
+     * @param int $id
      *
-     * @return \Pyz\Zed\FirstData\Business\FirstDataFacadeInterface
+     * @return \Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataItem
+     */
+    public function findTestPaymentFirstDataItemEntityById(int $id): SpyPaymentFirstDataItem
+    {
+        return (SpyPaymentFirstDataItemQuery::create())
+            ->filterByIdPaymentFirstDataItem($id)
+            ->findOne();
+    }
+
+    /**
+     * @param \SprykerEco\Zed\FirstData\Business\FirstDataBusinessFactory $firstDataBusinessFactoryMock
+     *
+     * @return \SprykerEco\Zed\FirstData\Business\FirstDataFacadeInterface
      */
     public function getFirstDataFacade(FirstDataBusinessFactory $firstDataBusinessFactoryMock): FirstDataFacadeInterface
     {
@@ -260,7 +278,7 @@ class FirstDataBusinessTester extends Actor
     }
 
     /**
-     * @return \Pyz\Zed\FirstData\Business\FirstDataFacade
+     * @return \SprykerEco\Zed\FirstData\Business\FirstDataFacade
      */
     public function getFacade(): FirstDataFacade
     {
@@ -303,15 +321,17 @@ class FirstDataBusinessTester extends Actor
     /**
      * @param string $transactionId
      * @param string $oid
+     * @param string $status
      *
      * @return \Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataNotification
      */
-    public function createTestPaymentFirstDataNotificationEntity(string $transactionId, string $oid): SpyPaymentFirstDataNotification
+    public function createTestPaymentFirstDataNotificationEntity(string $transactionId, string $oid, string $status): SpyPaymentFirstDataNotification
     {
         $paymentFirstDataNotificationEntity = new SpyPaymentFirstDataNotification();
         $paymentFirstDataNotificationEntity
             ->setTransactionId($transactionId)
             ->setOid($oid)
+            ->setStatus($status)
             ->save();
 
         return $paymentFirstDataNotificationEntity;
@@ -347,6 +367,50 @@ class FirstDataBusinessTester extends Actor
             ->setFirstDataTransactionData($firstDataTransactionDataTransfer);
 
         return $restCheckoutRequestAttributesTransfer;
+    }
+
+    /**
+     * @param string $clientToken
+     *
+     * @return \Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardToken
+     */
+    public function getFirstDataCardTokenWithUserRelationByClientToken(string $clientToken): SpyPaymentFirstDataCardToken
+    {
+        return SpyPaymentFirstDataCardTokenQuery::create()->filterByClientToken($clientToken)
+            ->joinWithSpyCusomerToFirstDataCardToken()
+            ->find()
+            ->getFirst();
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardToken
+     */
+    public function haveFirstDataCustomerToken(CustomerTransfer $customerTransfer): SpyPaymentFirstDataCardToken
+    {
+        $paymentFirstDataCardTokenEntity = $this->haveFirstDataCardToken();
+
+        $customerToFirstDataCardToken = (new SpyCusomerToFirstDataCardToken())
+            ->setCustomerReference($customerTransfer->getCustomerReference())
+            ->setFkPaymentFirstDataCardToken($paymentFirstDataCardTokenEntity->getIdPaymentFirstDataCardToken());
+
+        $customerToFirstDataCardToken->save();
+
+        return $paymentFirstDataCardTokenEntity;
+    }
+
+    /**
+     * @return \Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardToken
+     */
+    public function haveFirstDataCardToken(): SpyPaymentFirstDataCardToken
+    {
+        $paymentFirstDataCardTokenEntity = (new SpyPaymentFirstDataCardToken())
+            ->setClientToken(static::TEST_CLIENT_TOKEN);
+
+        $paymentFirstDataCardTokenEntity->save();
+
+        return $paymentFirstDataCardTokenEntity;
     }
 
     /**
