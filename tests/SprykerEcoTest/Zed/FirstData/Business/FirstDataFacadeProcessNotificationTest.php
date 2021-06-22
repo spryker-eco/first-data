@@ -5,32 +5,31 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group FirstDataFacadeProcessNotificationTest
- * Add your own group annotations below this line
  */
 class FirstDataFacadeProcessNotificationTest extends AbstractFirstDataFacadeTest
 {
     /**
-     * @var \PyzTest\Zed\FirstData\FirstDataBusinessTester
+     * @var \SprykerEcoTest\Zed\FirstData\FirstDataBusinessTester
      */
     protected $tester;
 
     /**
      * @return void
      */
-    public function testProcessNotificationSuccess(): void
+    public function testProcessNotificationMustSaveNotification(): void
     {
         //Arrange
         $firstDataNotificationTransfer = new FirstDataNotificationTransfer();
@@ -48,7 +47,7 @@ class FirstDataFacadeProcessNotificationTest extends AbstractFirstDataFacadeTest
         $firstDataNotificationTransfer->setCurrency('840');
 
         //Act
-        $response = $this->tester->getFacade()->processNotification($firstDataNotificationTransfer);
+        $response = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->processNotification($firstDataNotificationTransfer);
 
         //Assert
         $this->assertEquals($firstDataNotificationTransfer->getStatus(), $response->getStatus());

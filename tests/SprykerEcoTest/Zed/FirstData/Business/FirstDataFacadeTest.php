@@ -5,25 +5,24 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
 use ArrayObject;
 use DateInterval;
 use DateTime;
 use Generated\Shared\Transfer\OrderTransfer;
 use Generated\Shared\Transfer\PaymentTransfer;
-use Pyz\Shared\FirstData\FirstDataConfig;
+use SprykerEco\Shared\FirstData\FirstDataConfig;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group FirstDataFacadeTest
- * Add your own group annotations below this line
  */
 class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
 {
@@ -31,7 +30,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
     protected const OID = '2bfaf81a-3435';
 
     /**
-     * @var \PyzTest\Zed\FirstData\FirstDataBusinessTester
+     * @var \SprykerEcoTest\Zed\FirstData\FirstDataBusinessTester
      */
     protected $tester;
 
@@ -49,9 +48,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
 
         //Act
         $mappedQuoteTransfer = $this->tester
-            ->getLocator()
-            ->firstData()
-            ->facade()
+            ->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())
             ->mapFirstDataPaymentToQuote($restCheckoutRequestAttributesTransfer, $quoteTransfer);
 
         //Assert
@@ -75,7 +72,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
         $orderTransfer = (new OrderTransfer())->setCreatedAt($createdAt);
 
         //Act
-        $result = $this->tester->getFacade()->checkPaymentAuthorizationTimeOut($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->checkPaymentAuthorizationTimeOut($orderTransfer);
 
         //Assert
         $this->assertTrue($result);
@@ -91,7 +88,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
         $orderTransfer = (new OrderTransfer())->setCreatedAt($createdAt);
 
         //Act
-        $result = $this->tester->getFacade()->checkPaymentAuthorizationTimeOut($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->checkPaymentAuthorizationTimeOut($orderTransfer);
 
         //Assert
         $this->assertFalse($result);
@@ -112,9 +109,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
 
         //Act
         $mappedQuoteTransfer = $this->tester
-            ->getLocator()
-            ->firstData()
-            ->facade()
+            ->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())
             ->mapFirstDataPaymentToQuote($restCheckoutRequestAttributesTransfer, $quoteTransfer);
 
         //Assert
@@ -130,7 +125,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
         $this->tester->createTestPaymentFirstDataEntity($salesOrderEntity);
         $orderTransfer = (new OrderTransfer())->fromArray($salesOrderEntity->toArray(), true);
 
-        $result = $this->tester->getFacade()->loadPaymentDataByOrder($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->loadPaymentDataByOrder($orderTransfer);
 
         $this->assertNull($result->getPayments()->getIterator()->current());
     }
@@ -148,7 +143,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
                 ->setPaymentProvider('another provider')
         );
 
-        $result = $this->tester->getFacade()->loadPaymentDataByOrder($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->loadPaymentDataByOrder($orderTransfer);
         $paymentTransfer = $result->getPayments()->getIterator()->current();
 
         $this->assertNull($paymentTransfer->getFirstDataCreditCard());
@@ -166,7 +161,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
                 ->setPaymentProvider(FirstDataConfig::PAYMENT_PROVIDER_NAME_KEY)
         );
 
-        $result = $this->tester->getFacade()->loadPaymentDataByOrder($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->loadPaymentDataByOrder($orderTransfer);
         $paymentTransfer = $result->getPayments()->getIterator()->current();
 
         $this->assertNull($paymentTransfer->getFirstDataCreditCard());
@@ -185,7 +180,7 @@ class FirstDataFacadeTest extends AbstractFirstDataFacadeTest
                 ->setPaymentProvider(FirstDataConfig::PAYMENT_PROVIDER_NAME_KEY)
         );
 
-        $result = $this->tester->getFacade()->loadPaymentDataByOrder($orderTransfer);
+        $result = $this->tester->getFirstDataFacade($this->getFirstDataBusinessFactoryMock())->loadPaymentDataByOrder($orderTransfer);
         /** @var \Generated\Shared\Transfer\PaymentTransfer $payment */
         $payment = $result->getPayments()->getIterator()->current();
 
