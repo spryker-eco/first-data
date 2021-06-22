@@ -32,11 +32,9 @@ class RefundRequestConverter implements FirstDataRequestConverterInterface
         return [
             'transactionAmount' => [
                 'total' => $this->calculateRefundTotal($firstDataApiRequestTransfer),
-                // TODO swap back
-                'currency' => 'USD',
-//                'currency' => $firstDataApiRequestTransfer
-//                    ->getOrderOrFail()
-//                    ->getCurrencyIsoCode(),
+                'currency' => $firstDataApiRequestTransfer
+                    ->getOrderOrFail()
+                    ->getCurrencyIsoCode(),
             ],
         ];
     }
