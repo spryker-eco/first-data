@@ -53,9 +53,6 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                 'billing' => [
                     'name' => $billingAddress->getFirstName() ?? '',
                     'customerId' => $billingAddress->getCustomerId() ?? '',
-                    'contact' => [
-                       'email' => $billingAddress->getEmail() ?? '',
-                    ],
                     'address' => [
                         'company' => $billingAddress->getCompany() ?? '',
                         'address1' => $billingAddress->getAddress1() ?? '',
@@ -67,9 +64,6 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                 ],
                 'shipping' => [
                     'name' => $shippingAddress->getFirstName() ?? '',
-                    'contact' => [
-                        'email' => $shippingAddress->getEmail() ?? '',
-                    ],
                     'address' => [
                         'address1' => $shippingAddress->getAddress1() ?? '',
                         'city' => $shippingAddress->getCity() ?? '',
