@@ -88,12 +88,12 @@
         <id-method-parameter value="spy_payment_first_data_card_token_pk_seq"/>
     </table>
 
-    <table name="spy_cusomer_to_first_data_card_token">
-        <column name="id_cusomer_to_first_data_card_token" type="INTEGER" primaryKey="true" autoIncrement="true"/>
+    <table name="spy_customer_to_first_data_card_token">
+        <column name="id_customer_to_first_data_card_token" type="INTEGER" primaryKey="true" autoIncrement="true"/>
         <column name="fk_payment_first_data_card_token" type="INTEGER" required="true"/>
         <column name="customer_reference" type="VARCHAR" required="true"/>
 
-        <foreign-key name="spy_cusomer_to_first_data_card_token-fk_card_token" foreignTable="spy_payment_first_data_card_token">
+        <foreign-key name="spy_customer_to_first_data_card_token-fk_card_token" foreignTable="spy_payment_first_data_card_token">
             <reference local="fk_payment_first_data_card_token" foreign="id_payment_first_data_card_token"/>
         </foreign-key>
 
@@ -101,7 +101,7 @@
             <unique-column name="fk_payment_first_data_card_token"/>
             <unique-column name="customer_reference"/>
         </unique>
-        <id-method-parameter value="spy_cusomer_to_first_data_card_token_pk_seq"/>
+        <id-method-parameter value="spy_customer_to_first_data_card_token_pk_seq"/>
     </table>
 
     <table name="spy_payment_first_data_notification">
