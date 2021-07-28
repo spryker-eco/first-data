@@ -20,7 +20,7 @@ use Generated\Shared\Transfer\QuoteTransfer;
 use Generated\Shared\Transfer\RestCheckoutRequestAttributesTransfer;
 use Generated\Shared\Transfer\SaveOrderTransfer;
 use Generated\Shared\Transfer\StoreTransfer;
-use Orm\Zed\FirstData\Persistence\SpyCusomerToFirstDataCardToken;
+use Orm\Zed\FirstData\Persistence\SpyCustomerToFirstDataCardToken;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstData;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardToken;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardTokenQuery;
@@ -377,7 +377,7 @@ class FirstDataBusinessTester extends Actor
     public function getFirstDataCardTokenWithUserRelationByClientToken(string $clientToken): SpyPaymentFirstDataCardToken
     {
         return SpyPaymentFirstDataCardTokenQuery::create()->filterByClientToken($clientToken)
-            ->joinWithSpyCusomerToFirstDataCardToken()
+            ->joinWithSpyCustomerToFirstDataCardToken()
             ->find()
             ->getFirst();
     }
@@ -391,7 +391,7 @@ class FirstDataBusinessTester extends Actor
     {
         $paymentFirstDataCardTokenEntity = $this->haveFirstDataCardToken();
 
-        $customerToFirstDataCardToken = (new SpyCusomerToFirstDataCardToken())
+        $customerToFirstDataCardToken = (new SpyCustomerToFirstDataCardToken())
             ->setCustomerReference($customerTransfer->getCustomerReference())
             ->setFkPaymentFirstDataCardToken($paymentFirstDataCardTokenEntity->getIdPaymentFirstDataCardToken());
 

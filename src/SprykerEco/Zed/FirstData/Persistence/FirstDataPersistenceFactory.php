@@ -7,7 +7,7 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
-use Orm\Zed\FirstData\Persistence\SpyCusomerToFirstDataCardTokenQuery;
+use Orm\Zed\FirstData\Persistence\SpyCustomerToFirstDataCardTokenQuery;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataApiLogQuery;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataCardTokenQuery;
 use Orm\Zed\FirstData\Persistence\SpyPaymentFirstDataItemQuery;
@@ -48,11 +48,11 @@ class FirstDataPersistenceFactory extends AbstractPersistenceFactory
     }
 
     /**
-     * @return \Orm\Zed\FirstData\Persistence\SpyCusomerToFirstDataCardTokenQuery
+     * @return \Orm\Zed\FirstData\Persistence\SpyCustomerToFirstDataCardTokenQuery
      */
-    public function createCustomerToFirstDataCardTokenQuery(): SpyCusomerToFirstDataCardTokenQuery
+    public function createCustomerToFirstDataCardTokenQuery(): SpyCustomerToFirstDataCardTokenQuery
     {
-        return SpyCusomerToFirstDataCardTokenQuery::create();
+        return SpyCustomerToFirstDataCardTokenQuery::create();
     }
 
     /**

@@ -143,7 +143,7 @@ class FirstDataRepository extends AbstractRepository implements FirstDataReposit
 
         $paymentFirstDataCardTokenEntities = $this->getFactory()
             ->createPaymentFirstDataCardTokenQuery()
-            ->useSpyCusomerToFirstDataCardTokenQuery()
+            ->useSpyCustomerToFirstDataCardTokenQuery()
                 ->filterByCustomerReference($customerTransfer->getCustomerReference())
             ->endUse()
             ->find();
