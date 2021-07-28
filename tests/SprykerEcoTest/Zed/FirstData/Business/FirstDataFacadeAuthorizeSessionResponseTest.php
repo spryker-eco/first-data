@@ -49,8 +49,8 @@ class FirstDataFacadeAuthorizeSessionResponseTest extends AbstractFirstDataFacad
 
         $firstDataCardToken = $this->tester->getFirstDataCardTokenWithUserRelationByClientToken(static::TEST_CLIENT_TOKEN);
 
-        /** @var \Orm\Zed\FirstData\Persistence\SpyCusomerToFirstDataCardToken $customerToFirstDataCardTokens */
-        $customerToFirstDataCardTokens = $firstDataCardToken->getSpyCusomerToFirstDataCardTokens()->getFirst();
+        /** @var \Orm\Zed\FirstData\Persistence\SpyCustomerToFirstDataCardToken $customerToFirstDataCardTokens */
+        $customerToFirstDataCardTokens = $firstDataCardToken->getSpyCustomerToFirstDataCardTokens()->getFirst();
 
         //Assert
         $this->assertTrue($firstDataApiResponseTransfer->getIsSuccess());
