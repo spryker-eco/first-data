@@ -95,11 +95,11 @@
             <event name="pass 1 min" timeout="1 min"/>
             <event name="request capture" manual="true" command="FirstData/Capture"/>
             <event name="capture" onEnter="true" command="FirstData/Capture"/>
-            <event name="retry capture" timeout="10 minutes" manual="true" />
+            <event name="retry capture" timeout="10 minutes" manual="true"/>
             <event name="request cancel" manual="true"/>
             <event name="cancel" onEnter="true" command="FirstData/Cancel"/>
             <event name="refund" manual="true" command="FirstData/Refund"/>
-            <event name="retry cancel" timeout="10 minutes" manual="true" />
+            <event name="retry cancel" timeout="10 minutes" manual="true"/>
         </events>
     </process>
 </statemachine>
