@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<statemachine
+    xmlns="spryker:oms-01"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="spryker:oms-01 http://static.spryker.com/oms-01.xsd">
+    <process name="FirstDataCreditCard01" main="true">
+        <states>
+            <state name="new"/>
+            <state name="authorized"/>
+            <state name="authorization pending"/>
+            <state name="capture requested"/>
+            <state name="capture retry required"/>
+            <state name="captured"/>
+            <state name="refunded"/>
+            <state name="not captured"/>
+            <state name="cancel requested"/>
+            <state name="cancel retry required"/>
+            <state name="canceled"/>
+            <state name="not canceled"/>
+        </states>
+        <transitions>
+            <transition happy="true" condition="FirstDataPayment/IsAuthorized">
+                <source>new</source>
+                <target>authorized</target>
+                <event>pass</event>
+            </transition>
+            <transition>
+                <source>new</source>
+                <target>authorization pending</target>
+                <event>pass</event>
+            </transition>
+            <transition>
+                <source>authorization pending</source>
+                <target>new</target>
+                <event>pass 1 min</event>
+            </transition>
+            <transition happy="true">
+                <source>authorized</source>
+                <target>capture requested</target>
+                <event>request capture</event>
+            </transition>
+            <transition happy="true" condition="FirstDataPayment/IsCaptureSuccessful">
+                <source>capture requested</source>
+                <target>captured</target>
+                <event>capture</event>
+            </transition>
+            <transition>
+                <source>captured</source>
+                <target>refunded</target>
+                <event>refund</event>
+            </transition>
+            <transition>
+                <source>capture requested</source>
+                <target>capture retry required</target>
+                <event>capture</event>
+            </transition>
+            <transition condition="FirstDataPayment/IsCaptureRetryAllowed">
+                <source>capture retry required</source>
+                <target>capture requested</target>
+                <event>retry capture</event>
+            </transition>
+            <transition>
+                <source>capture retry required</source>
+                <target>not captured</target>
+                <event>retry capture</event>
+            </transition>
+            <transition happy="true">
+                <source>authorized</source>
+                <target>cancel requested</target>
+                <event>request cancel</event>
+            </transition>
+            <transition happy="true" condition="FirstDataPayment/IsCancelSuccessful">
+                <source>cancel requested</source>
+                <target>canceled</target>
+                <event>cancel</event>
+            </transition>
+            <transition>
+                <source>cancel requested</source>
+                <target>cancel retry required</target>
+                <event>cancel</event>
+            </transition>
+            <transition condition="FirstDataPayment/IsCancelRetryAllowed">
+                <source>cancel retry required</source>
+                <target>cancel requested</target>
+                <event>retry cancel</event>
+            </transition>
+            <transition>
+                <source>cancel retry required</source>
+                <target>not canceled</target>
+                <event>retry cancel</event>
+            </transition>
+        </transitions>
+        <events>
+            <event name="pass" manual="true"/>
+            <event name="pass 1 min" timeout="1 min"/>
+            <event name="request capture" manual="true" command="FirstData/Capture"/>
+            <event name="capture" onEnter="true" command="FirstData/Capture"/>
+            <event name="retry capture" timeout="10 minutes" manual="true" />
+            <event name="request cancel" manual="true"/>
+            <event name="cancel" onEnter="true" command="FirstData/Cancel"/>
+            <event name="refund" manual="true" command="FirstData/Refund"/>
+            <event name="retry cancel" timeout="10 minutes" manual="true" />
+        </events>
+    </process>
+</statemachine>
