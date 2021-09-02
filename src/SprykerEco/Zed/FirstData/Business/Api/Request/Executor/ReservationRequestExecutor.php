@@ -74,6 +74,8 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
 
         if (!$firstDataApiResponseTransfer->getIsSuccess()) {
             $checkoutResponse->setIsSuccess(false);
+
+            return;
         }
 
         $quoteTransfer->getPaymentOrFail()->getFirstDataCreditCardOrFail()->setFirstDataTransactionData(
@@ -134,9 +136,12 @@ class ReservationRequestExecutor implements FirstDataRequestExecutorInterface
             ->getFirstDataCreditCardOrFail()
             ->getFirstDataTransactionDataOrFail();
 
-        return $firstDataTransactionDataTransfer->setTransactionId(
-            $firstDataApiResponseTransfer->getClientResponseOrFail()->getIpgTransactionId()
-        )
-            ->setOid($firstDataApiResponseTransfer->getClientResponseOrFail()->getOrderId());
+        $firstDataTransactionDataTransfer
+            ->setTransactionId($firstDataApiResponseTransfer->getClientResponseOrFail()->getIpgTransactionId())
+            ->setOid($firstDataApiResponseTransfer->getClientResponseOrFail()->getOrderId())
+            ->setCcBrand($firstDataApiResponseTransfer->getClientResponse()->getPaymentMethodDetails()->getPaymentCard()->getBrand())
+            ->setCardNumber($firstDataApiResponseTransfer->getClientResponse()->getPaymentMethodDetails()->getPaymentCard()->getLast4());
+
+        return $firstDataTransactionDataTransfer;
     }
 }
