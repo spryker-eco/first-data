@@ -59,7 +59,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                         'city' => $billingAddress->getCity() ?? '',
                         'region' => $billingAddress->getRegion() ?? '',
                         'postalCode' => $billingAddress->getZipCode() ?? '',
-                        'country' => $billingAddress->getCountry() ?? '',
+                        'country' => $billingAddress->getCountry()->getName() ?? '',
                     ],
                 ],
                 'shipping' => [
@@ -69,7 +69,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                         'city' => $shippingAddress->getCity() ?? '',
                         'region' => $shippingAddress->getRegion() ?? '',
                         'postalCode' => $shippingAddress->getZipCode() ?? '',
-                        'country' => $shippingAddress->getCountry() ?? '',
+                        'country' => $shippingAddress->getCountry()->getName() ?? '',
                     ],
                 ],
             ],
