@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\FirstData\Business\Api\Request\Converter;
 
+use Generated\Shared\Transfer\AddressTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use SprykerEco\Zed\FirstData\FirstDataConfig;
 
@@ -59,7 +60,7 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                         'city' => $billingAddress->getCity() ?? '',
                         'region' => $billingAddress->getRegion() ?? '',
                         'postalCode' => $billingAddress->getZipCode() ?? '',
-                        'country' => $billingAddress->getCountry()->getName() ?? '',
+                        'country' => $this->getCountryName($billingAddress),
                     ],
                 ],
                 'shipping' => [
@@ -69,11 +70,27 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
                         'city' => $shippingAddress->getCity() ?? '',
                         'region' => $shippingAddress->getRegion() ?? '',
                         'postalCode' => $shippingAddress->getZipCode() ?? '',
-                        'country' => $shippingAddress->getCountry()->getName() ?? '',
+                        'country' => $this->getCountryName($shippingAddress),
                     ],
                 ],
             ],
         ];
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\AddressTransfer $addressTransfer
+     *
+     * @return string
+     */
+    protected function getCountryName(AddressTransfer $addressTransfer): string
+    {
+        $countryTransfer = $addressTransfer->getCountry();
+
+        if ($countryTransfer === null) {
+            return '';
+        }
+
+        return $countryTransfer->getName() ?? '';
     }
 
     /**
