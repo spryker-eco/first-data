@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\FirstData\Business\Api\Request\Converter;
 
+use Generated\Shared\Transfer\AddressTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use SprykerEco\Zed\FirstData\FirstDataConfig;
 
@@ -29,27 +30,67 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
      */
     public function convertRequestTransferToArray(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): array
     {
+        $customerToken = $firstDataApiRequestTransfer->getPaymentMethodOrFail()->getCustomerTokenOrFail();
+        $billingAddress = $firstDataApiRequestTransfer->getBillingAddressOrFail();
+        $shippingAddress = $firstDataApiRequestTransfer->getShippingAddressOrFail();
+
         return [
-           'transactionAmount' => [
-               'total' => $this->calculateCaptureTotal($firstDataApiRequestTransfer),
-               'currency' => $firstDataApiRequestTransfer
-                   ->getOrderOrFail()
-                   ->getCurrencyIsoCode(),
-           ],
+            'transactionAmount' => [
+                'total' => $this->calculateReservationTotal($firstDataApiRequestTransfer),
+                'currency' => $firstDataApiRequestTransfer->getCurrencyIsoCode(),
+            ],
             'paymentMethod' => [
                 'paymentToken' => [
-                    'function' => $firstDataApiRequestTransfer
-                        ->getPaymentMethodOrFail()
-                        ->getPaymentTokenOrFail()
-                        ->getFunction(),
-                    'value' => $firstDataApiRequestTransfer
-                        ->getPaymentMethodOrFail()
-                        ->getPaymentTokenOrFail()
-                        ->getValueOrFail(),
+                    'value' => $customerToken->getCardTokenOrFail(),
+                    'expiryDate' => [
+                        'month' => $customerToken->getExpMonthOrFail(),
+                        'year' => $customerToken->getExpYear(),
+                    ],
                 ],
             ],
-            'storeId' => $firstDataApiRequestTransfer->getStoreNameOrFail(),
+            'storeId' => $firstDataApiRequestTransfer->getStoreId(),
+            'order' => [
+                'orderId' => $firstDataApiRequestTransfer->getOrderOrFail()->getOrderReferenceOrFail(),
+                'billing' => [
+                    'name' => $billingAddress->getFirstName() ?? '',
+                    'customerId' => $billingAddress->getCustomerId() ?? '',
+                    'address' => [
+                        'company' => $billingAddress->getCompany() ?? '',
+                        'address1' => $billingAddress->getAddress1() ?? '',
+                        'city' => $billingAddress->getCity() ?? '',
+                        'region' => $billingAddress->getRegion() ?? '',
+                        'postalCode' => $billingAddress->getZipCode() ?? '',
+                        'country' => $this->getCountryName($billingAddress),
+                    ],
+                ],
+                'shipping' => [
+                    'name' => $shippingAddress->getFirstName() ?? '',
+                    'address' => [
+                        'address1' => $shippingAddress->getAddress1() ?? '',
+                        'city' => $shippingAddress->getCity() ?? '',
+                        'region' => $shippingAddress->getRegion() ?? '',
+                        'postalCode' => $shippingAddress->getZipCode() ?? '',
+                        'country' => $this->getCountryName($shippingAddress),
+                    ],
+                ],
+            ],
         ];
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\AddressTransfer $addressTransfer
+     *
+     * @return string
+     */
+    protected function getCountryName(AddressTransfer $addressTransfer): string
+    {
+        $countryTransfer = $addressTransfer->getCountry();
+
+        if ($countryTransfer === null) {
+            return '';
+        }
+
+        return $countryTransfer->getName() ?? '';
     }
 
     /**
@@ -57,17 +98,11 @@ class ReservationRequestConverter implements FirstDataRequestConverterInterface
      *
      * @return string
      */
-    protected function calculateCaptureTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
+    protected function calculateReservationTotal(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
     {
-        $total = 0;
-        foreach ($firstDataApiRequestTransfer->getOrderOrFail()->getItems() as $item) {
-            if (in_array($item->getIdSalesOrderItem(), $firstDataApiRequestTransfer->getOrderItemIds())) {
-                $total += (int)$item->getSumPriceToPayAggregation();
-            }
-        }
+        $grandTotal = $firstDataApiRequestTransfer->getTotalsOrFail()->getGrandTotal();
+        $roundedSum = round($grandTotal / 100, 2);
 
-        $total = $total * (1 + (int)$firstDataApiRequestTransfer->getPercentageBuffer() / 100);
-
-        return (string)(round($total / 100, 2));
+        return (string)$roundedSum;
     }
 }

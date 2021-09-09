@@ -74,6 +74,7 @@ class CancelCommandExecutor implements FirstDataCommandExecutorInterface
         $firstDataApiRequestTransfer = (new FirstDataApiRequestTransfer())
             ->setRequestType(FirstDataConfig::FIRST_DATA_CANCEL_RESERVATION_REQUEST_TYPE)
             ->setOrder($firstDataOmsCommandRequestTransfer->getOrder())
+            ->setStoreId($this->firstDataConfig->getStoreId())
             ->setTransactionId($paymentFirstDataTransfer->getOid());
 
         $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest($firstDataApiRequestTransfer);

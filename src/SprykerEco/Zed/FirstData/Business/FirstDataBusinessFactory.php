@@ -15,12 +15,18 @@ use SprykerEco\Zed\FirstData\Business\Api\Generator\HashGenerator;
 use SprykerEco\Zed\FirstData\Business\Api\Generator\HashGeneratorInterface;
 use SprykerEco\Zed\FirstData\Business\Api\Logger\FirstDataApiLogger;
 use SprykerEco\Zed\FirstData\Business\Api\Logger\FirstDataApiLoggerInterface;
+use SprykerEco\Zed\FirstData\Business\Api\Provider\AuthorizeSessionProvider;
+use SprykerEco\Zed\FirstData\Business\Api\Provider\AuthorizeSessionProviderInterface;
+use SprykerEco\Zed\FirstData\Business\Api\Request\Builder\FirstDataAuthorizeSessionRequestBuilder;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Builder\FirstDataRequestBuilder;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Builder\FirstDataRequestBuilderInterface;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\CaptureRequestConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\FirstDataRequestConverterInterface;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\RefundRequestConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Request\Converter\ReservationRequestConverter;
+use SprykerEco\Zed\FirstData\Business\Api\Request\Executor\FirstDataRequestExecutorInterface;
+use SprykerEco\Zed\FirstData\Business\Api\Request\Executor\ReservationRequestExecutor;
+use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataAuthorizeSessionResponseConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverter;
 use SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverterInterface;
 use SprykerEco\Zed\FirstData\Business\Checker\FirstDataNotificationChecker;
@@ -32,12 +38,17 @@ use SprykerEco\Zed\FirstData\Business\Checker\PaymentAuthorizationTimeOutChecker
 use SprykerEco\Zed\FirstData\Business\CommandExecutor\CancelCommandExecutor;
 use SprykerEco\Zed\FirstData\Business\CommandExecutor\CaptureCommandExecutor;
 use SprykerEco\Zed\FirstData\Business\CommandExecutor\FirstDataCommandExecutorInterface;
+use SprykerEco\Zed\FirstData\Business\CommandExecutor\RefundCommandExecutor;
 use SprykerEco\Zed\FirstData\Business\Expander\OrderExpander;
 use SprykerEco\Zed\FirstData\Business\Expander\OrderExpanderInterface;
 use SprykerEco\Zed\FirstData\Business\Mapper\FirstDataPaymentQuoteMapper;
 use SprykerEco\Zed\FirstData\Business\Mapper\FirstDataPaymentQuoteMapperInterface;
 use SprykerEco\Zed\FirstData\Business\Processor\NotificationProcessor;
 use SprykerEco\Zed\FirstData\Business\Processor\NotificationProcessorInterface;
+use SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessor;
+use SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessorInterface;
+use SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReader;
+use SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReaderInterface;
 use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaver;
 use SprykerEco\Zed\FirstData\Business\Saver\FirstDataOrderPaymentSaverInterface;
 use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapter;
@@ -100,6 +111,19 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\FirstData\Business\CommandExecutor\FirstDataCommandExecutorInterface
+     */
+    public function createRefundCommandExecutor(): FirstDataCommandExecutorInterface
+    {
+        return new RefundCommandExecutor(
+            $this->createFirstDataApiClient(),
+            $this->getEntityManager(),
+            $this->getRepository(),
+            $this->getConfig()
+        );
+    }
+
+    /**
      * @return \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface
      */
     public function createFirstDataApiClient(): FirstDataApiClientInterface
@@ -108,6 +132,32 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
             $this->createFirstDataGuzzleHttpClientAdapter(),
             $this->createFirstDataRequestBuilder(),
             $this->createFirstDataResponseConverter(),
+            $this->createFirstDataApiLogger(),
+            $this->getConfig()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\Request\Executor\FirstDataRequestExecutorInterface
+     */
+    public function createReservationRequestExecutor(): FirstDataRequestExecutorInterface
+    {
+        return new ReservationRequestExecutor(
+            $this->createFirstDataApiClient(),
+            $this->getConfig(),
+            $this->createFirstDataOrderPaymentSaver()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\ApiClient\FirstDataApiClientInterface
+     */
+    public function createFirstDataAuthorizeSessionApiClient(): FirstDataApiClientInterface
+    {
+        return new FirstDataApiClient(
+            $this->createFirstDataGuzzleHttpClientAdapter(),
+            $this->createFirstDataAuthorizeSessionRequestBuilder(),
+            $this->createFirstDataAuthorizeSessionResponseConverter(),
             $this->createFirstDataApiLogger(),
             $this->getConfig()
         );
@@ -135,6 +185,18 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\Request\Builder\FirstDataRequestBuilderInterface
+     */
+    public function createFirstDataAuthorizeSessionRequestBuilder(): FirstDataRequestBuilderInterface
+    {
+        return new FirstDataAuthorizeSessionRequestBuilder(
+            $this->getUtilEncodingService(),
+            $this->getConfig(),
+            $this->createHashGenerator()
+        );
+    }
+
+    /**
      * @return \SprykerEco\Zed\FirstData\Business\Mapper\FirstDataPaymentQuoteMapperInterface
      */
     public function createFirstDataPaymentQuoteMapper(): FirstDataPaymentQuoteMapperInterface
@@ -148,6 +210,14 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
     public function createFirstDataResponseConverter(): FirstDataResponseConverterInterface
     {
         return new FirstDataResponseConverter($this->getUtilEncodingService());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\Response\Converter\FirstDataResponseConverterInterface
+     */
+    public function createFirstDataAuthorizeSessionResponseConverter(): FirstDataResponseConverterInterface
+    {
+        return new FirstDataAuthorizeSessionResponseConverter($this->getUtilEncodingService());
     }
 
     /**
@@ -264,5 +334,33 @@ class FirstDataBusinessFactory extends AbstractBusinessFactory
         return new OrderExpander(
             $this->getRepository()
         );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Api\Provider\AuthorizeSessionProviderInterface
+     */
+    public function createAuthorizeSessionProvider(): AuthorizeSessionProviderInterface
+    {
+        return new AuthorizeSessionProvider(
+            $this->createFirstDataAuthorizeSessionApiClient(),
+            $this->getRepository(),
+            $this->getEntityManager()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Reader\FirstDataCustomerTokenReaderInterface
+     */
+    public function createFirstDataCustomerTokenReader(): FirstDataCustomerTokenReaderInterface
+    {
+        return new FirstDataCustomerTokenReader($this->getRepository());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\FirstData\Business\Processor\TokenizationProcessorInterface
+     */
+    public function createTokenizationProcessor(): TokenizationProcessorInterface
+    {
+        return new TokenizationProcessor($this->getEntityManager());
     }
 }

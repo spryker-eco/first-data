@@ -30,12 +30,12 @@ class RefundRequestConverter implements FirstDataRequestConverterInterface
     public function convertRequestTransferToArray(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): array
     {
         return [
-           'transactionAmount' => [
-               'total' => $this->calculateRefundTotal($firstDataApiRequestTransfer),
-               'currency' => $firstDataApiRequestTransfer
-                   ->getOrderOrFail()
-                   ->getCurrencyIsoCode(),
-           ],
+            'transactionAmount' => [
+                'total' => $this->calculateRefundTotal($firstDataApiRequestTransfer),
+                'currency' => $firstDataApiRequestTransfer
+                    ->getOrderOrFail()
+                    ->getCurrencyIsoCode(),
+            ],
         ];
     }
 

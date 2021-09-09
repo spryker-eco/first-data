@@ -18,6 +18,7 @@ use SprykerEco\Zed\FirstData\FirstDataConfig;
 class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
 {
     protected const REQUEST_KEY_REQUEST_TYPE = 'requestType';
+    protected const REQUEST_KEY_STORE_ID = 'storeId';
 
     /**
      * @var \SprykerEco\Zed\FirstData\Business\Api\Request\Converter\FirstDataRequestConverterInterface[]
@@ -78,9 +79,14 @@ class FirstDataRequestBuilder implements FirstDataRequestBuilderInterface
      */
     protected function getRequestPayload(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): string
     {
+        $storeId = $firstDataApiRequestTransfer->getStoreId();
         $requestPayload = [];
         $requestPayload = $this->executeFirstDataRequestConverter($requestPayload, $firstDataApiRequestTransfer);
         $requestPayload[static::REQUEST_KEY_REQUEST_TYPE] = $firstDataApiRequestTransfer->getRequestType();
+
+        if ($storeId) {
+            $requestPayload[static::REQUEST_KEY_STORE_ID] = $storeId;
+        }
 
         return $this->utilEncodingService->encodeJson($requestPayload) ?? '';
     }

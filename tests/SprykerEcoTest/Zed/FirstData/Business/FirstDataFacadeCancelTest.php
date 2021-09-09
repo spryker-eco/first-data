@@ -5,20 +5,19 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group FirstDataFacadeCancelTest
- * Add your own group annotations below this line
  */
 class FirstDataFacadeCancelTest extends AbstractFirstDataFacadeTest
 {
@@ -27,7 +26,7 @@ class FirstDataFacadeCancelTest extends AbstractFirstDataFacadeTest
     public const TRANSACTION_TYPE = 'VOID';
 
     /**
-     * @var \PyzTest\Zed\FirstData\FirstDataBusinessTester
+     * @var \SprykerEcoTest\Zed\FirstData\FirstDataBusinessTester
      */
     protected $tester;
 

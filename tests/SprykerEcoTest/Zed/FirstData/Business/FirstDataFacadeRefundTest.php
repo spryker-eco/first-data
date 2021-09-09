@@ -5,93 +5,62 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
-use Generated\Shared\Transfer\CurrencyTransfer;
-use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
-use Generated\Shared\Transfer\ItemTransfer;
+use Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer;
 use Generated\Shared\Transfer\OrderTransfer;
-use Generated\Shared\Transfer\RefundTransfer;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group FirstDataFacadeRefundTest
- * Add your own group annotations below this line
  */
 class FirstDataFacadeRefundTest extends AbstractFirstDataFacadeTest
 {
-    public const REQUEST_TYPE = 'ReturnTransaction';
-
-    public const TRANSACTION_TYPE = 'RETURN';
+    protected const TEST_APPROVED_STATUS = 'TEST_APPROVED_STATUS';
+    protected const OMS_STATUS_REFUNDED = 'refunded';
 
     /**
-     * @var \PyzTest\Zed\FirstData\FirstDataBusinessTester
+     * @var \SprykerEcoTest\Zed\FirstData\FirstDataBusinessTester
      */
     protected $tester;
 
     /**
-     * @var array
-     */
-    protected $clientResponse;
-
-    /**
      * @return void
      */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->clientResponse = $this->tester->getClientResponse();
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteRefundOmsCommandSuccessCase(): void
+    public function testExecuteRefundOmsCommandMustUpdateStatusAfterSuccessRequest(): void
     {
         //Arrange
         $clientResponse = $this->tester->getClientResponse();
-        $clientResponse['transactionType'] = static::TRANSACTION_TYPE;
-        $aggregatedSum = $clientResponse['approvedAmount']['total'] * 100;
-        $item = (new ItemTransfer())->setIdSalesOrderItem(1)->setRefundableAmount($aggregatedSum);
-        $currency = (new CurrencyTransfer())->setName($clientResponse['approvedAmount']['currency']);
-        $order = (new OrderTransfer())->setCurrency($currency);
+        $salesOrderEntity = $this->tester->createTestSalesOrderEntity();
+        $salesOrderItemEntity = $this->tester->createTestSalesOrderItemEntity($salesOrderEntity);
+        $paymentFirstDataEntity = $this->tester->createTestPaymentFirstDataEntity($salesOrderEntity);
+        $paymentFirstDataItemEntity = $this->tester->createTestPaymentFirstDataItemEntity(
+            $paymentFirstDataEntity,
+            $salesOrderItemEntity,
+            static::TEST_APPROVED_STATUS
+        );
 
-        $refund = new RefundTransfer();
-        $refund->addItem($item);
-        $firstDataApiRequestTransfer = new FirstDataApiRequestTransfer();
-        $firstDataApiRequestTransfer->setTransactionId($clientResponse['orderId']);
-        $firstDataApiRequestTransfer->setRequestType(static::REQUEST_TYPE);
-        $firstDataApiRequestTransfer->setOrder($order);
-        $firstDataApiRequestTransfer->setRefund($refund);
+        $firstDataOmsCommandRequestTransfer = (new FirstDataOmsCommandRequestTransfer())
+            ->setSalesOrderItemIds([$salesOrderItemEntity->getIdSalesOrderItem()])
+            ->setOrder(
+                (new OrderTransfer())->fromArray($salesOrderEntity->toArray(), true)
+            );
 
         //Act
-        $response = $this->tester
+        $this->tester
             ->getFirstDataFacade($this->getFirstDataBusinessFactoryMock($clientResponse))
-            ->executeRefundOmsCommand($firstDataApiRequestTransfer);
+            ->executeRefundOmsCommand($firstDataOmsCommandRequestTransfer);
+
+        $paymentFirstDataItemEntityAfterRefund = $this->tester
+            ->findTestPaymentFirstDataItemEntityById($paymentFirstDataItemEntity->getIdPaymentFirstDataItem());
 
         //Assert
-        $this->assertTrue($response->getIsSuccess());
-        $this->assertNull($response->getError());
-        $this->assertNotEmpty($response->getClientResponse());
-        $this->assertEquals(
-            $firstDataApiRequestTransfer->getTransactionId(),
-            $response->getClientResponse()->getOrderId()
-        );
-        $this->assertEquals(
-            $firstDataApiRequestTransfer->getOrder()->getCurrency()->getName(),
-            $response->getClientResponse()->getApprovedAmount()->getCurrency(),
-        );
-        $this->assertEquals(
-            $firstDataApiRequestTransfer->getRefund()->getItems()[0]->getRefundableAmount() / 100,
-            $response->getClientResponse()->getApprovedAmount()->getTotal(),
-        );
-        $this->assertEquals(static::TRANSACTION_TYPE, $response->getClientResponse()->getTransactionType());
+        $this->assertSame(static::OMS_STATUS_REFUNDED, $paymentFirstDataItemEntityAfterRefund->getStatus());
     }
 }

@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\FirstData\Persistence;
 
+use Generated\Shared\Transfer\CustomerTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\PaymentFirstDataTransfer;
 
@@ -51,4 +53,11 @@ interface FirstDataRepositoryInterface
      * @return \Generated\Shared\Transfer\PaymentFirstDataTransfer|null
      */
     public function findPaymentFirstDataByIdSalesOrder(int $idSalesOrder): ?PaymentFirstDataTransfer;
+
+    /**
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function findPaymentFirstDataCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer;
 }
