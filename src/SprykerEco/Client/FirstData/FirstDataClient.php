@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Client\FirstData;
 
+use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Spryker\Client\Kernel\AbstractClient;
@@ -48,5 +49,19 @@ class FirstDataClient extends AbstractClient implements FirstDataClientInterface
         return $this->getFactory()
             ->createZedStub()
             ->processNotificationAction($firstDataNotificationTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer
+    {
+        return $this->getFactory()
+            ->createZedStub()
+            ->getAuthorizeSessionResponse();
     }
 }

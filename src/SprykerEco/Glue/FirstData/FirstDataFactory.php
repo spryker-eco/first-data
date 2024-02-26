@@ -9,6 +9,8 @@ namespace SprykerEco\Glue\FirstData;
 
 use Spryker\Glue\Kernel\AbstractFactory;
 use SprykerEco\Glue\FirstData\Dependency\Service\FirstDataToUtilTextServiceInterface;
+use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataAuthorizeSessionParametersMapper;
+use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataAuthorizeSessionParametersMapperInterface;
 use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataCreditCardParametersMapper;
 use SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataCreditCardParametersMapperInterface;
 use SprykerEco\Glue\FirstData\Processor\Saver\FirstDataNotificationSaver;
@@ -32,6 +34,14 @@ class FirstDataFactory extends AbstractFactory
             $this->getClient(),
             $this->getUtilTextService(),
         );
+    }
+
+    /**
+     * @return \SprykerEco\Glue\FirstData\Processor\Mapper\FirstDataAuthorizeSessionParametersMapperInterface
+     */
+    public function createFirstDataAuthorizeSessionParametersMapper(): FirstDataAuthorizeSessionParametersMapperInterface
+    {
+        return new FirstDataAuthorizeSessionParametersMapper($this->getClient());
     }
 
     /**
