@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<database xmlns="spryker:schema-01"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          name="zed"
+          xsi:schemaLocation="spryker:schema-01 https://static.spryker.com/schema-01.xsd"
+          namespace="Orm\Zed\FirstData\Persistence"
+          package="src.Orm.Zed.FirstData.Persistence">
+
+    <table name="spy_payment_first_data">
+        <column name="id_payment_first_data" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="fk_sales_order" type="INTEGER" required="true"/>
+        <column name="order_reference" type="VARCHAR" size="45" required="true"/>
+        <column name="transaction_id" required="true" type="VARCHAR" size="45"/>
+        <column name="oid" required="true" type="VARCHAR" size="45"/>
+        <column name="card_number" type="VARCHAR" size="4"/>
+        <column name="exp_year" type="VARCHAR" size="4"/>
+        <column name="exp_month" type="VARCHAR" size="2"/>
+        <column name="cc_brand" type="VARCHAR" size="64"/>
+        <column name="txn_date_time" type="VARCHAR" size="32"/>
+        <column name="status" type="VARCHAR" size="32"/>
+        <column name="approval_code" type="VARCHAR" size="64"/>
+        <column name="scheme_transaction_id" type="VARCHAR" size="64"/>
+        <column name="charge_total" type="VARCHAR" size="32"/>
+        <column name="hosteddataid" type="VARCHAR" size="64"/>
+        <column name="response_hash" type="VARCHAR" size="64"/>
+
+        <foreign-key name="spy_payment_first_data-fk_sales_order" foreignTable="spy_sales_order" phpName="Order" refPhpName="PaymentFirstData">
+            <reference local="fk_sales_order" foreign="id_sales_order"/>
+        </foreign-key>
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_pk_seq"/>
+    </table>
+
+    <table name="spy_payment_first_data_item">
+        <column name="id_payment_first_data_item" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="fk_payment_first_data" type="INTEGER" required="true"/>
+        <column name="fk_sales_order_item" type="INTEGER" required="true"/>
+        <column name="transaction_id" required="true" type="VARCHAR" size="45"/>
+        <column name="status" required="true" type="VARCHAR" size="45"/>
+
+        <foreign-key name="spy_payment_first_data_item-spy_payment_first_data" foreignTable="spy_payment_first_data" phpName="PaymentFirstData" refPhpName="PaymentFirstDataItem">
+            <reference local="fk_payment_first_data" foreign="id_payment_first_data"/>
+        </foreign-key>
+
+        <foreign-key name="spy_payment_first_data_item-spy_sales_order_item" foreignTable="spy_sales_order_item" phpName="SalesOrderItem" refPhpName="PaymentFirstDataItem">
+            <reference local="fk_sales_order_item" foreign="id_sales_order_item"/>
+        </foreign-key>
+
+        <unique name="spy_payment_first_data_item-unique-payment_first_data-order_item">
+            <unique-column name="fk_payment_first_data"/>
+            <unique-column name="fk_sales_order_item"/>
+        </unique>
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_item_pk_seq"/>
+    </table>
+
+    <table name="spy_payment_first_data_api_log">
+        <column name="id_payment_first_data_api_log" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="request" required="true" type="LONGVARCHAR"/>
+        <column name="is_success" required="true" type="BOOLEAN"/>
+        <column name="response" required="true" type="LONGVARCHAR"/>
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_api_log_pk_seq"/>
+    </table>
+
+    <table name="spy_payment_first_data_card_token">
+        <column name="id_payment_first_data_card_token" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="card_token"  type="VARCHAR" />
+        <column name="client_token"  type="VARCHAR" />
+        <column name="masked"  type="VARCHAR" />
+        <column name="name"  type="VARCHAR" />
+        <column name="last4"  type="INTEGER" />
+        <column name="address1"  type="VARCHAR" />
+        <column name="address2"  type="VARCHAR"/>
+        <column name="city"  type="VARCHAR" />
+        <column name="region"  type="VARCHAR" />
+        <column name="country"  type="VARCHAR" />
+        <column name="postal_code"  type="VARCHAR" />
+        <column name="bin"  type="INTEGER" />
+        <column name="exp_month"  type="VARCHAR" />
+        <column name="exp_year"  type="VARCHAR" />
+        <column name="brand"  type="VARCHAR" />
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_card_token_pk_seq"/>
+    </table>
+
+    <table name="spy_customer_to_first_data_card_token">
+        <column name="id_customer_to_first_data_card_token" type="INTEGER" primaryKey="true" autoIncrement="true"/>
+        <column name="fk_payment_first_data_card_token" type="INTEGER" required="true"/>
+        <column name="customer_reference" type="VARCHAR" required="true"/>
+
+        <foreign-key name="spy_customer_to_first_data_card_token-fk_card_token" foreignTable="spy_payment_first_data_card_token">
+            <reference local="fk_payment_first_data_card_token" foreign="id_payment_first_data_card_token"/>
+        </foreign-key>
+
+        <unique name="fk_payment_first_data_card_token-customer_reference">
+            <unique-column name="fk_payment_first_data_card_token"/>
+            <unique-column name="customer_reference"/>
+        </unique>
+        <id-method-parameter value="spy_customer_to_first_data_card_token_pk_seq"/>
+    </table>
+
+    <table name="spy_payment_first_data_notification">
+        <column name="id_payment_first_data_notification" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="transaction_id" required="true" type="VARCHAR" size="64"/>
+        <column name="oid" required="true" type="VARCHAR" size="64"/>
+        <column name="payment_token" type="VARCHAR" size="64"/>
+        <column name="status" type="VARCHAR" size="32"/>
+        <column name="txn_date_time" type="VARCHAR" size="32"/>
+        <column name="txn_type" type="VARCHAR" size="32"/>
+        <column name="ref_number" type="VARCHAR" size="64"/>
+        <column name="id_scheme_transaction" type="VARCHAR" size="64"/>
+        <column name="approval_code" type="VARCHAR" size="64"/>
+        <column name="charge_total" type="VARCHAR" size="32"/>
+        <column name="currency" type="VARCHAR" size="16"/>
+        <column name="timezone" type="VARCHAR" size="64"/>
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_notification_pk_seq"/>
+    </table>
+</database>
