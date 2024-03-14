@@ -78,6 +78,14 @@ interface FirstDataConstants
 
     /**
      * Specification:
+     * - Contains a name of gateway provider for the FirstData API.
+     *
+     * @api
+     */
+    public const GATEWAY_PROVIDER_NAME = 'FIRST_DATA:GATEWAY_PROVIDER_NAME';
+
+    /**
+     * Specification:
      * - Represents Store ID configuration required for Hosted Page.
      *
      * @api

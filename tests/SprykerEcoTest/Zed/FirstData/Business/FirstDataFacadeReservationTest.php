@@ -5,94 +5,76 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
+use Generated\Shared\Transfer\AddressTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\CurrencyTransfer;
-use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
-use Generated\Shared\Transfer\ItemTransfer;
-use Generated\Shared\Transfer\OrderTransfer;
-use Generated\Shared\Transfer\PaymentMethodTransfer;
-use Generated\Shared\Transfer\PaymentTokenTransfer;
+use Generated\Shared\Transfer\FirstDataTransactionDataTransfer;
+use Generated\Shared\Transfer\FirstDataTransfer;
+use Generated\Shared\Transfer\PaymentTransfer;
+use Generated\Shared\Transfer\TotalsTransfer;
+use Spryker\Shared\Kernel\Transfer\AbstractTransfer;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group FirstDataFacadeReservationTest
- * Add your own group annotations below this line
  */
 class FirstDataFacadeReservationTest extends AbstractFirstDataFacadeTest
 {
-    public const REQUEST_TYPE = 'PaymentTokenPreAuthTransaction';
-
-    public const TRANSACTION_TYPE = 'PREAUTH';
+    protected const PAYMENT_PROVIDER_NAME_KEY = 'firstData';
+    protected const DEFAULT_OMS_PROCESS_NAME = 'Test01';
 
     /**
-     * @var \PyzTest\Zed\FirstData\FirstDataBusinessTester
+     * @var \SprykerEcoTest\Zed\FirstData\FirstDataBusinessTester
      */
     protected $tester;
 
     /**
-     * @var array
-     */
-    protected $clientResponse;
-
-    /**
      * @return void
      */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->clientResponse = $this->tester->getClientResponse();
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteReservationOmsCommandSuccessCase(): void
+    public function testExecuteReservationOmsCommandMustReturnSuccessResponseAfterReservationRequest(): void
     {
         //Arrange
+        $saveOrderTransfer = $this->tester->haveOrder([], static::DEFAULT_OMS_PROCESS_NAME);
         $clientResponse = $this->tester->getClientResponse();
-        $clientResponse['transactionType'] = static::TRANSACTION_TYPE;
-        $aggregatedSum = $clientResponse['approvedAmount']['total'] * 100;
-        $item = (new ItemTransfer())->setIdSalesOrderItem(1)->setSumPriceToPayAggregation($aggregatedSum);
-        $currency = (new CurrencyTransfer())->setName($clientResponse['approvedAmount']['currency']);
-        $order = (new OrderTransfer())->setCurrency($currency)->addItem($item);
-        $firstDataApiRequestTransfer = new FirstDataApiRequestTransfer();
-        $firstDataApiRequestTransfer->setRequestType(static::REQUEST_TYPE);
-        $firstDataApiRequestTransfer->setOrder($order);
-        $firstDataApiRequestTransfer->setOrderItemIds([1]);
-        $firstDataApiRequestTransfer->setPaymentMethod(
-            (new PaymentMethodTransfer())
-                ->setPaymentToken((new PaymentTokenTransfer())
-                    ->setValue('21EEEE8A-398C-4D9A-B5D6-F1A6273F933F')->setFunction('CREDIT'))
-        );
-        $firstDataApiRequestTransfer->setStoreName('12022224560');
-        $firstDataApiRequestTransfer->setPercentageBuffer(0);
+        $paymentTransfer = (new PaymentTransfer())
+            ->setPaymentProvider(static::PAYMENT_PROVIDER_NAME_KEY)
+            ->setFirstDataCreditCard(
+                (new FirstDataTransfer())->setFirstDataTransactionData(
+                    ( new FirstDataTransactionDataTransfer())
+                        ->setCardToken('21EEEE8A-398C-4D9A-B5D6-F1A6273F933F')
+                        ->setExpYear(02)
+                        ->setExpMonth(21)
+                )
+            );
+        $currency = (new CurrencyTransfer())
+            ->setName($clientResponse['approvedAmount']['currency'])
+            ->setCode($clientResponse['approvedAmount']['currency']);
+
+        $totals = (new TotalsTransfer())->setGrandTotal($clientResponse['approvedAmount']['total']);
+
+        $quoteTransfer = $this->tester->createQuoteTransfer()
+            ->setShippingAddress(new AddressTransfer())
+            ->setBillingAddress(new AddressTransfer())
+            ->setPayment($paymentTransfer)
+            ->setTotals($totals)
+            ->setCurrency($currency);
+
+        $checkoutResponse = (new CheckoutResponseTransfer())->setSaveOrder($saveOrderTransfer);
 
         //Act
-        $response = $this->tester
+        $this->tester
             ->getFirstDataFacade($this->getFirstDataBusinessFactoryMock($clientResponse))
-            ->executeReservationOmsCommand($firstDataApiRequestTransfer);
+            ->executeReservationRequest($quoteTransfer, $checkoutResponse);
 
         //Assert
-        $this->assertTrue($response->getIsSuccess());
-        $this->assertNull($response->getError());
-        $this->assertNotEmpty($response->getClientResponse());
-        $this->assertEquals(
-            $firstDataApiRequestTransfer->getOrder()->getCurrency()->getName(),
-            $response->getClientResponse()->getApprovedAmount()->getCurrency(),
-        );
-
-        $this->assertEquals(
-            $firstDataApiRequestTransfer->getOrder()->getItems()[0]->getSumPriceToPayAggregation() / 100,
-            $response->getClientResponse()->getApprovedAmount()->getTotal(),
-        );
-        $this->assertEquals(static::TRANSACTION_TYPE, $response->getClientResponse()->getTransactionType());
+        $this->assertTrue($checkoutResponse->getIsSuccess());
     }
 }

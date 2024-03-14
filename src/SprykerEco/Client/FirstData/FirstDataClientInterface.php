@@ -7,7 +7,10 @@
 
 namespace SprykerEco\Client\FirstData;
 
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataHashRequestTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 
@@ -45,12 +48,42 @@ interface FirstDataClientInterface
 
     /**
      * Specification:
-     * - Makes api call to the First Data in order to receive authorize session data.
+     * - Retrieves token by `ClientToken` from database.
+     * - Saves first data payment token data to database.
      * - Makes Zed request.
      *
      * @api
      *
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer
+     */
+    public function processTokenization(FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer): FirstDataCustomerTokenTransfer;
+
+    /**
+     * Specification:
+     * - Makes API call to the First Data in order to receive authorize session data `ClientToken` and `PublicKeyBase64`.
+     * - Associate `ClientToken` with current customer save association to database.
+     * - Makes Zed request.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
      * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
      */
-    public function getAuthorizeSessionResponse(): FirstDataApiResponseTransfer;
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer;
+
+    /**
+     * Specification:
+     * - Reads all available card tokens from DB for given customer.
+     * - Makes Zed request.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function getCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer;
 }

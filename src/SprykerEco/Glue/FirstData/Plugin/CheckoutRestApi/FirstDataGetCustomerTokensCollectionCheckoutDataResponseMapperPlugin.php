@@ -16,11 +16,11 @@ use Spryker\Glue\Kernel\AbstractPlugin;
 /**
  * @method \SprykerEco\Glue\FirstData\FirstDataFactory getFactory()
  */
-class FirstDataAuthorizeSessionParametersCheckoutDataResponseMapperPlugin extends AbstractPlugin implements CheckoutDataResponseMapperPluginInterface
+class FirstDataGetCustomerTokensCollectionCheckoutDataResponseMapperPlugin extends AbstractPlugin implements CheckoutDataResponseMapperPluginInterface
 {
     /**
      * {@inheritDoc}
-     * - Maps `AuthorizeSessionResponseTransfer` to `RestCheckoutDataResponseAttributesTransfer.firstDataAuthorizeSessionParameters`.
+     * - Maps `CustomerTokensCollection` to `RestCheckoutDataResponseAttributesTransfer.customerTokensCollection firstDataAuthorizeSessionParameters`.
      *
      * @api
      *
@@ -36,8 +36,8 @@ class FirstDataAuthorizeSessionParametersCheckoutDataResponseMapperPlugin extend
         RestCheckoutDataResponseAttributesTransfer $restCheckoutResponseAttributesTransfer
     ): RestCheckoutDataResponseAttributesTransfer {
         return $this->getFactory()
-            ->createFirstDataAuthorizeSessionParametersMapper()
-            ->mapFirstDataAuthorizeSessionParametersTransferToRestCheckoutDataResponseAttributesTransfer(
+            ->createFirstDataCustomerTokenMapper()
+            ->mapFirstDataCustomerTokensCollectionTransferToRestCheckoutDataResponseAttributesTransfer(
                 $restCheckoutResponseAttributesTransfer,
                 $restCheckoutDataTransfer
             );

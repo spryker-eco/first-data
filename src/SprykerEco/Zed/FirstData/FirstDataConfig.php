@@ -21,12 +21,15 @@ class FirstDataConfig extends AbstractBundleConfig
     protected const OMS_STATUS_CAPTURE_RETRY = 'payment capture retry';
     protected const STATE_CANCEL_REQUESTED = 'cancel requested';
     protected const OMS_STATUS_CANCELED = 'canceled';
+    protected const OMS_STATUS_REFUNDED = 'refunded';
     protected const OMS_STATUS_CANCELLATION_RETRY = 'payment cancellation retry required';
 
     public const FIRST_DATA_RESERVATION_REQUEST_TYPE = 'PaymentTokenPreAuthTransaction';
     public const FIRST_DATA_CANCEL_RESERVATION_REQUEST_TYPE = 'VoidPreAuthTransactions';
     public const FIRST_DATA_CAPTURE_REQUEST_TYPE = 'PostAuthTransaction';
     public const FIRST_DATA_REFUND_REQUEST_TYPE = 'ReturnTransaction';
+    public const FIRST_DATA_AUTHORIZE_SESSION_REQUEST_TYPE = 'AuthorizeSession';
+    public const FIRST_DATA_RETURN_REQUEST_TYPE = 'ReturnTransaction';
 
     /**
      * @uses \SprykerEco\Shared\FirstData\FirstDataConfig::PAYMENT_METHOD_KEY_CREDIT_CARD
@@ -47,6 +50,26 @@ class FirstDataConfig extends AbstractBundleConfig
         }
 
         return $this->getFirstDataOrderApiUrl();
+    }
+
+    /**
+     * @api
+     *
+     * @return string
+     */
+    public function getFirstDataGatewayProviderName(): string
+    {
+        return $this->get(FirstDataConstants::GATEWAY_PROVIDER_NAME);
+    }
+
+    /**
+     * @api
+     *
+     * @return string
+     */
+    public function geAuthorizeSessionApiEndpoint(): string
+    {
+        return $this->get(FirstDataConstants::AUTHORIZE_SESSION_API_URL);
     }
 
     /**
@@ -164,6 +187,16 @@ class FirstDataConfig extends AbstractBundleConfig
      *
      * @return string
      */
+    public function getOmsStatusRefunded(): string
+    {
+        return static::OMS_STATUS_REFUNDED;
+    }
+
+    /**
+     * @api
+     *
+     * @return string
+     */
     public function getFirstDataOrderApiUrl(): string
     {
         return $this->get(FirstDataConstants::ORDER_API_URL);
@@ -217,5 +250,25 @@ class FirstDataConfig extends AbstractBundleConfig
     public function getStoreName(): string
     {
         return $this->get(FirstDataConstants::STORE_NAME);
+    }
+
+    /**
+     * @api
+     *
+     * @return string
+     */
+    public function getStoreId(): string
+    {
+        return $this->get(FirstDataConstants::STORE_ID);
+    }
+
+    /**
+     * @api
+     *
+     * @return int
+     */
+    public function getAdditionAuthPercentageBuffer(): int
+    {
+        return $this->get(FirstDataConstants::ADDITIONAL_AUTH_PERCENTAGE_BUFFER, 0);
     }
 }

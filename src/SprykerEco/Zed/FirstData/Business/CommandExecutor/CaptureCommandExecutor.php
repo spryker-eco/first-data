@@ -75,6 +75,7 @@ class CaptureCommandExecutor implements FirstDataCommandExecutorInterface
             ->setRequestType(FirstDataConfig::FIRST_DATA_CAPTURE_REQUEST_TYPE)
             ->setOrder($firstDataOmsCommandRequestTransfer->getOrder())
             ->setOrderItemIds($firstDataOmsCommandRequestTransfer->getSalesOrderItemIds())
+            ->setStoreId($this->firstDataConfig->getStoreId())
             ->setTransactionId($paymentFirstDataTransfer->getOid());
 
         $firstDataApiResponseTransfer = $this->firstDataApiClient->performApiRequest($firstDataApiRequestTransfer);

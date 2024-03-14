@@ -66,6 +66,44 @@
         <id-method-parameter value="spy_payment_first_data_api_log_pk_seq"/>
     </table>
 
+    <table name="spy_payment_first_data_card_token">
+        <column name="id_payment_first_data_card_token" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="card_token"  type="VARCHAR" />
+        <column name="client_token"  type="VARCHAR" />
+        <column name="masked"  type="VARCHAR" />
+        <column name="name"  type="VARCHAR" />
+        <column name="last4"  type="INTEGER" />
+        <column name="address1"  type="VARCHAR" />
+        <column name="address2"  type="VARCHAR"/>
+        <column name="city"  type="VARCHAR" />
+        <column name="region"  type="VARCHAR" />
+        <column name="country"  type="VARCHAR" />
+        <column name="postal_code"  type="VARCHAR" />
+        <column name="bin"  type="INTEGER" />
+        <column name="exp_month"  type="VARCHAR" />
+        <column name="exp_year"  type="VARCHAR" />
+        <column name="brand"  type="VARCHAR" />
+
+        <behavior name="timestampable"/>
+        <id-method-parameter value="spy_payment_first_data_card_token_pk_seq"/>
+    </table>
+
+    <table name="spy_customer_to_first_data_card_token">
+        <column name="id_customer_to_first_data_card_token" type="INTEGER" primaryKey="true" autoIncrement="true"/>
+        <column name="fk_payment_first_data_card_token" type="INTEGER" required="true"/>
+        <column name="customer_reference" type="VARCHAR" required="true"/>
+
+        <foreign-key name="spy_customer_to_first_data_card_token-fk_card_token" foreignTable="spy_payment_first_data_card_token">
+            <reference local="fk_payment_first_data_card_token" foreign="id_payment_first_data_card_token"/>
+        </foreign-key>
+
+        <unique name="fk_payment_first_data_card_token-customer_reference">
+            <unique-column name="fk_payment_first_data_card_token"/>
+            <unique-column name="customer_reference"/>
+        </unique>
+        <id-method-parameter value="spy_customer_to_first_data_card_token_pk_seq"/>
+    </table>
+
     <table name="spy_payment_first_data_notification">
         <column name="id_payment_first_data_notification" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
         <column name="transaction_id" required="true" type="VARCHAR" size="64"/>

@@ -19,7 +19,7 @@ class FirstDataCheckoutRequestValidatorPlugin extends AbstractPlugin implements 
 {
     /**
      * {@inheritDoc}
-     * - Checks that "FirstData" payment data has all required fields.
+     * - Checks that "FirstData" payment data has all required fields when payment type is "Hosted Page".
      *
      * @api
      *

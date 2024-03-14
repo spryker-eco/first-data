@@ -5,39 +5,43 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace PyzTest\Zed\FirstData\Business;
+namespace SprykerEcoTest\Zed\FirstData\Business;
 
 use Codeception\Test\Unit;
-use Pyz\Zed\FirstData\Business\FirstDataBusinessFactory;
-use Pyz\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapter;
-use Pyz\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapterInterface;
-use Pyz\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponse;
-use Pyz\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponseInterface;
-use Pyz\Zed\FirstData\FirstDataConfig;
-use Pyz\Zed\FirstData\Persistence\FirstDataEntityManager;
-use Pyz\Zed\FirstData\Persistence\FirstDataRepository;
-use Spryker\Service\UtilEncoding\UtilEncodingService;
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
+use SprykerEco\Zed\FirstData\Business\FirstDataBusinessFactory;
+use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapter;
+use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapterInterface;
+use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponse;
+use SprykerEco\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponseInterface;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceBridge;
+use SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface;
+use SprykerEco\Zed\FirstData\FirstDataConfig;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataEntityManager;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataPersistenceFactory;
+use SprykerEco\Zed\FirstData\Persistence\FirstDataRepository;
 
 /**
  * Auto-generated group annotations
  *
- * @group PyzTest
+ * @group SprykerEcoTest
  * @group Zed
  * @group FirstData
  * @group Business
  * @group Facade
  * @group AbstractFirstDataFacadeTest
- * Add your own group annotations below this line
  */
 abstract class AbstractFirstDataFacadeTest extends Unit
 {
+    protected const CLIENT_TOKEN_HEADER_KEY = 'Client-Token';
+    protected const TEST_CLIENT_TOKEN = 'clientToken';
+
     /**
      * @param array $clientResponse
+     * @param array $clientHeaders
      *
-     * @return \Pyz\Zed\FirstData\Business\FirstDataBusinessFactory
+     * @return \SprykerEco\Zed\FirstData\Business\FirstDataBusinessFactory
      */
-    protected function getFirstDataBusinessFactoryMock(array $clientResponse): FirstDataBusinessFactory
+    protected function getFirstDataBusinessFactoryMock(array $clientResponse = [], array $clientHeaders = []): FirstDataBusinessFactory
     {
         $mockFirstDataBusinessFactory = $this->createPartialMock(
             FirstDataBusinessFactory::class,
@@ -48,12 +52,12 @@ abstract class AbstractFirstDataFacadeTest extends Unit
         );
 
         $mockFirstDataBusinessFactory->setConfig(new FirstDataConfig());
-        $mockFirstDataBusinessFactory->setEntityManager(new FirstDataEntityManager());
-        $mockFirstDataBusinessFactory->setRepository(new FirstDataRepository());
+        $mockFirstDataBusinessFactory->setEntityManager((new FirstDataEntityManager())->setFactory(new FirstDataPersistenceFactory()));
+        $mockFirstDataBusinessFactory->setRepository((new FirstDataRepository())->setFactory(new FirstDataPersistenceFactory()));
 
         $mockFirstDataBusinessFactory
             ->method('createFirstDataGuzzleHttpClientAdapter')
-            ->willReturn($this->getFirstDataGuzzleHttpClientAdapterMock($clientResponse));
+            ->willReturn($this->getFirstDataGuzzleHttpClientAdapterMock($clientResponse, $clientHeaders));
         $mockFirstDataBusinessFactory
             ->method('getUtilEncodingService')
             ->willReturn($this->getUtilEncodingServiceMock($clientResponse));
@@ -63,10 +67,11 @@ abstract class AbstractFirstDataFacadeTest extends Unit
 
     /**
      * @param array $clientResponse
+     * @param array $clientHeaders
      *
-     * @return \Pyz\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapterInterface
+     * @return \SprykerEco\Zed\FirstData\Dependency\External\Guzzle\FirstDataGuzzleHttpClientAdapterInterface
      */
-    protected function getFirstDataGuzzleHttpClientAdapterMock(array $clientResponse): FirstDataGuzzleHttpClientAdapterInterface
+    protected function getFirstDataGuzzleHttpClientAdapterMock(array $clientResponse, array $clientHeaders): FirstDataGuzzleHttpClientAdapterInterface
     {
         $createFirstDataGuzzleHttpClientAdapterMock = $this->createPartialMock(
             FirstDataGuzzleHttpClientAdapter::class,
@@ -77,7 +82,7 @@ abstract class AbstractFirstDataFacadeTest extends Unit
 
         $createFirstDataGuzzleHttpClientAdapterMock
             ->method('post')
-            ->willReturn($this->getFirstDataGuzzleResponseMock($clientResponse));
+            ->willReturn($this->getFirstDataGuzzleResponseMock($clientResponse, $clientHeaders));
 
         return $createFirstDataGuzzleHttpClientAdapterMock;
     }
@@ -85,12 +90,12 @@ abstract class AbstractFirstDataFacadeTest extends Unit
     /**
      * @param array $clientResponse
      *
-     * @return \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     * @return \SprykerEco\Zed\FirstData\Dependency\Service\FirstDataToUtilEncodingServiceInterface
      */
-    protected function getUtilEncodingServiceMock(array $clientResponse): UtilEncodingServiceInterface
+    protected function getUtilEncodingServiceMock(array $clientResponse): FirstDataToUtilEncodingServiceInterface
     {
         $mockUtilEncodingService = $this->createPartialMock(
-            UtilEncodingService::class,
+            FirstDataToUtilEncodingServiceBridge::class,
             [
                 'decodeJson',
                 'encodeJson',
@@ -108,20 +113,36 @@ abstract class AbstractFirstDataFacadeTest extends Unit
 
     /**
      * @param array $clientResponse
+     * @param array $clientHeaders
      *
-     * @return \Pyz\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponseInterface
+     * @return \SprykerEco\Zed\FirstData\Dependency\External\Guzzle\Response\FirstDataGuzzleResponseInterface
      */
-    protected function getFirstDataGuzzleResponseMock(array $clientResponse): FirstDataGuzzleResponseInterface
+    protected function getFirstDataGuzzleResponseMock(array $clientResponse, array $clientHeaders): FirstDataGuzzleResponseInterface
     {
         $mockFirstDataGuzzleResponse = $this->createPartialMock(
             FirstDataGuzzleResponse::class,
             [
                 'getResponseBody',
+                'getHeaders',
+                'getHeader',
             ]
         );
+
         $mockFirstDataGuzzleResponse
             ->method('getResponseBody')
             ->willReturn(json_encode($clientResponse));
+
+        $mockFirstDataGuzzleResponse
+            ->method('getHeaders')
+            ->willReturn($clientHeaders);
+
+        $mockFirstDataGuzzleResponse
+            ->method('getHeader')
+            ->willReturnCallback(function (string $header) {
+                if ($header === static::CLIENT_TOKEN_HEADER_KEY) {
+                    return static::TEST_CLIENT_TOKEN;
+                }
+            });
 
         return $mockFirstDataGuzzleResponse;
     }

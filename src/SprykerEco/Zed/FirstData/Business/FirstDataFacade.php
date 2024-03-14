@@ -8,8 +8,11 @@
 namespace SprykerEco\Zed\FirstData\Business;
 
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
+use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\FirstDataApiRequestTransfer;
 use Generated\Shared\Transfer\FirstDataApiResponseTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer;
+use Generated\Shared\Transfer\FirstDataCustomerTokenTransfer;
 use Generated\Shared\Transfer\FirstDataNotificationTransfer;
 use Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer;
 use Generated\Shared\Transfer\OrderTransfer;
@@ -47,15 +50,16 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponse
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeReservationOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer
+    public function executeReservationRequest(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponse): void
     {
-        return $this->getFactory()
-            ->createFirstDataApiClient()
-            ->performApiRequest($firstDataApiRequestTransfer);
+        $this->getFactory()
+            ->createReservationRequestExecutor()
+            ->executeRequest($quoteTransfer, $checkoutResponse);
     }
 
     /**
@@ -111,15 +115,15 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
      *
      * @api
      *
-     * @param \Generated\Shared\Transfer\FirstDataApiRequestTransfer $firstDataApiRequestTransfer
+     * @param \Generated\Shared\Transfer\FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     * @return void
      */
-    public function executeRefundOmsCommand(FirstDataApiRequestTransfer $firstDataApiRequestTransfer): FirstDataApiResponseTransfer
+    public function executeRefundOmsCommand(FirstDataOmsCommandRequestTransfer $firstDataOmsCommandRequestTransfer): void
     {
-        return $this->getFactory()
-            ->createFirstDataApiClient()
-            ->performApiRequest($firstDataApiRequestTransfer);
+        $this->getFactory()
+            ->createRefundCommandExecutor()
+            ->executeOmsCommand($firstDataOmsCommandRequestTransfer);
     }
 
     /**
@@ -220,5 +224,53 @@ class FirstDataFacade extends AbstractFacade implements FirstDataFacadeInterface
         return $this->getFactory()
             ->createOrderExpander()
             ->loadPaymentDataByOrder($orderTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataApiResponseTransfer
+     */
+    public function getAuthorizeSessionResponse(CustomerTransfer $customerTransfer): FirstDataApiResponseTransfer
+    {
+        return $this->getFactory()
+            ->createAuthorizeSessionProvider()
+            ->getAuthorizeSessionResponse($customerTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokensCollectionTransfer
+     */
+    public function getFirstDataCustomerTokensCollection(CustomerTransfer $customerTransfer): FirstDataCustomerTokensCollectionTransfer
+    {
+        return $this->getFactory()
+            ->createFirstDataCustomerTokenReader()
+            ->getFirstDataCustomerTokensCollection($customerTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer
+     *
+     * @return \Generated\Shared\Transfer\FirstDataCustomerTokenTransfer
+     */
+    public function processTokenization(FirstDataCustomerTokenTransfer $firstDataCustomerTokenTransfer): FirstDataCustomerTokenTransfer
+    {
+        return $this->getFactory()
+            ->createTokenizationProcessor()
+            ->processTokenization($firstDataCustomerTokenTransfer);
     }
 }
